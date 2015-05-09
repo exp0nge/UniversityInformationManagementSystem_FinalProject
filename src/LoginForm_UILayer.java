@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by MD on 5/7/2015.
@@ -78,6 +80,13 @@ public class LoginForm_UILayer extends JFrame {
         c.gridheight = 3;
         c.insets = new Insets(10, 10, 10, 10);
         c.fill = GridBagConstraints.BOTH;
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LoginFormChooser_BLLayer.setUsername(usernameTextF.getText());
+                LoginFormChooser_BLLayer.setPassword(passwordTextF.getText());
+            }
+        });
         panel.add(submitButton, c);
 
         //Register button
