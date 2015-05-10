@@ -38,7 +38,7 @@ public class LoginFormChooser_UILayer extends JFrame{
         studentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LoginFormChooser_BLLayer.setUserType("student", frame);
+                LoginForm_BLLayer.setUserType("student", frame);
             }
         });
         panel.add(studentButton, c);
@@ -54,7 +54,7 @@ public class LoginFormChooser_UILayer extends JFrame{
         facultyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LoginFormChooser_BLLayer.setUserType("faculty", frame);
+                LoginForm_BLLayer.setUserType("faculty", frame);
             }
         });
         panel.add(facultyButton, c);

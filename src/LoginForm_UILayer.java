@@ -83,8 +83,8 @@ public class LoginForm_UILayer extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LoginFormChooser_BLLayer.setUsername(usernameTextF.getText());
-                LoginFormChooser_BLLayer.setPassword(passwordTextF.getText());
+                LoginForm_BLLayer.setUsername(usernameTextF.getText());
+                LoginForm_BLLayer.setPassword(passwordTextF.getText(), frame);
             }
         });
         panel.add(submitButton, c);
@@ -95,6 +95,12 @@ public class LoginForm_UILayer extends JFrame {
         c.gridy = 14;
         c.insets = new Insets(0, 10, 10, 10);
         c.fill = GridBagConstraints.BOTH;
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LoginForm_BLLayer.newRegister();
+            }
+        });
         panel.add(registerButton, c);
 
         frame.setVisible(true);
