@@ -88,7 +88,7 @@ public class Register_UILayer {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               LoginForm_DALayer.registerNewEntity(frame, firstNameTF.getText(), lastNameTF.getText(), usernameTF.getText(), passwordTF.getText(), userType);
+               LoginForm_BLLayer.registerNewEntity(frame, firstNameTF.getText(), lastNameTF.getText(), usernameTF.getText(), passwordTF.getText());
             }
         });
         panel.add(submitButton, c);

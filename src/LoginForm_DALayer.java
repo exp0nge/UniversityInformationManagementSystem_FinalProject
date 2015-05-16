@@ -13,6 +13,7 @@ public class LoginForm_DALayer {
 
     private LoginForm_DALayer(){}
     private static String [] infoLine;
+    private static int currentIDNumberCount = 00000000;
 
     public static boolean checkPassword(String username, String password, String userType) {
         try {
@@ -48,7 +49,7 @@ public class LoginForm_DALayer {
         boolean alreadyExists = checkPassword(username, password, type);
         if(alreadyExists == false) {
             String commaDelimiter = ",";
-            String fullLine = "\n" + firstName + commaDelimiter + lastName + commaDelimiter + username + commaDelimiter + password + commaDelimiter + type + "\n";
+            String fullLine = "\n" + firstName + commaDelimiter + lastName + commaDelimiter + username + commaDelimiter + password + commaDelimiter + type + generateID();
             try {
                 FileOutputStream file;
                 if (type.equals("student"))
@@ -56,7 +57,13 @@ public class LoginForm_DALayer {
                 else
                     file = new FileOutputStream("dbAdmin.csv", true);
                 file.write(fullLine.getBytes());
-                FileOutputStream newFileUsername = new FileOutputStream("accounts/" + username + ".csv");
+                FileOutputStream newFileUsername;
+                if (type.equals("faculty"))
+                    newFileUsername = new FileOutputStream("accounts/faculty/" + username + ".csv");
+                else
+                    newFileUsername = new FileOutputStream("accounts/st/" + username + ".csv");
+                String header = "File information for: " + username;
+                newFileUsername.write(header.getBytes());
                 newFileUsername.write(fullLine.getBytes());
                 JOptionPane.showMessageDialog(frame, "Account created!");
                 file.close();
@@ -72,6 +79,10 @@ public class LoginForm_DALayer {
         }
 
         return true;
+    }
+
+    private static String generateID() {
+        return Integer.toString(currentIDNumberCount + 1);
     }
 
     public static String getUsername(){

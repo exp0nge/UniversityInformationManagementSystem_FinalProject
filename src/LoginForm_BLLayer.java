@@ -47,4 +47,8 @@ public class LoginForm_BLLayer {
     public static void newRegister() {
         Register_UILayer registerUI = Register_UILayer.getInst(userType);
     }
+
+    public static void registerNewEntity(JFrame frame, String firstNameTF, String lastNameTF, String usernameTF, String passwordTF) {
+        LoginForm_DALayer.registerNewEntity(frame, firstNameTF, lastNameTF, usernameTF, passwordTF, userType);
+    }
 }

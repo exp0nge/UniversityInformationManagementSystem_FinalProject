@@ -98,6 +98,7 @@ public class LoginForm_UILayer extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 LoginForm_BLLayer.newRegister();
             }
         });
