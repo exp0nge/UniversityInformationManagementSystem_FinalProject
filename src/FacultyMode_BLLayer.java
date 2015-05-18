@@ -26,6 +26,7 @@ public class FacultyMode_BLLayer {
                 JButton stButton = new JButton(element[0] + " " + element[1]);
                 stButton.addActionListener(ae -> {
                     openStudentPanel(element[2], jPane);
+
                 });
                 jPane.add(stButton, "wrap");
                 jPane.updateUI();
@@ -39,7 +40,6 @@ public class FacultyMode_BLLayer {
     private static void openStudentPanel(String s, JPanel jPane) {
         jPane.removeAll();
         jPane.updateUI();
-        //Put new class
         FacultyMode_DALayer.openStudentPanel(s, jPane);
     }
 }

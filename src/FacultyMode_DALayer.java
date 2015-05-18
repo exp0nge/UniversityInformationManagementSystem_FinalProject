@@ -1,4 +1,8 @@
+import net.miginfocom.swing.MigLayout;
+
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +95,8 @@ public class FacultyMode_DALayer {
                     String [] basicInfoArray = line.split(",");
                     JLabel stName = new JLabel("Name: " + basicInfoArray[0] + " " + basicInfoArray[1] + ", ID: " + basicInfoArray[5]);
                     jPane.add(stName, "wrap");
+                    //Add options for new class/contact/awards
+                    openStudentClassOptionButtons(filepath, jPane, stUserName);
                 }
                 if(line.contains("class:")){
                     String [] classInfo = line.split(",");
@@ -130,5 +136,76 @@ public class FacultyMode_DALayer {
         catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public static void openStudentClassOptionButtons(String filepath, JPanel jPane, String stUserName) {
+        //Adding buttons: Add class, Add contact info, Add scholarships
+        JButton addClassButton = new JButton("Add Class");
+        JButton addContactButton = new JButton("Contact Info");
+        JButton addScholarshipsButton = new JButton("Scholarships/Awards");
+
+        //addClass Functionality
+        addClassButton.addActionListener(ae -> {
+            newClassInfo(filepath, jPane, stUserName);
+        });
+        //addContact Functionality
+        addContactButton.addActionListener(ae -> {
+
+        });
+        //addScholarships Functionality
+        addScholarshipsButton.addActionListener(ae -> {
+
+        });
+
+        jPane.add(addClassButton, "wrap");
+        jPane.add(addContactButton, "wrap");
+        jPane.add(addScholarshipsButton, "wrap");
+    }
+
+    private static void newClassInfo(String filepath, JPanel jPane, String username) {
+        //Show panel to display new class info:
+        JFrame classInfoFrame = new JFrame();
+        classInfoFrame.setSize(380, 160);
+        classInfoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        classInfoFrame.setResizable(false);
+        JPanel infoP = new JPanel(new MigLayout());
+        classInfoFrame.getContentPane().add(infoP);
+
+        JLabel classNameL = new JLabel("Class name: ");
+        JTextField classNameTF = new JTextField();
+        JLabel classDeptL = new JLabel("Department: ");
+        JTextField classDeptTF = new JTextField();
+        JLabel gradeReceivedL = new JLabel("Grade received: ");
+        JTextField gradeReceivedTF = new JTextField("N/A");
+
+        JButton addClass = new JButton("Add class");
+        addClass.addActionListener(ae ->{
+            try{
+                FileOutputStream fileOutputStream = new FileOutputStream(filepath, true);
+                if (classDeptTF.getText().length() < 3 || classDeptTF.getText().length() < 2)
+                {
+                    JOptionPane.showMessageDialog(infoP, "Invalid input parameters");
+                }
+                else {
+                    String newClassString = "\n" + "class:," + classNameTF.getText() + ", " + classDeptTF.getText() + ", " + gradeReceivedTF.getText();
+                    fileOutputStream.write(newClassString.getBytes());
+                    openStudentPanel(username, jPane);
+                    classInfoFrame.dispatchEvent(new WindowEvent(classInfoFrame, WindowEvent.WINDOW_CLOSING));
+                }
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        });
+        //TODO: Fix TF size issue
+        infoP.add(classNameL);
+        infoP.add(classNameTF, "growx, push, wrap");
+        infoP.add(classDeptL);
+        infoP.add(classDeptTF, "growx, push, wrap");
+        infoP.add(gradeReceivedL);
+        infoP.add(gradeReceivedTF, "growx, push, wrap");
+        infoP.add(addClass);
+        classInfoFrame.setVisible(true);
+
     }
 }
