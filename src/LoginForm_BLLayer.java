@@ -26,7 +26,7 @@ public class LoginForm_BLLayer {
         if(checkPassword) {
             authFormFrame.dispatchEvent(new WindowEvent(authFormFrame, WindowEvent.WINDOW_CLOSING));
             if(userType.equals("faculty")){
-                //TODO
+                FacultyMode_UILayer facultyUI = FacultyMode_UILayer.getInst();
             }
             else{
                 StudentMode_UILayer studentUI = StudentMode_UILayer.getInst();

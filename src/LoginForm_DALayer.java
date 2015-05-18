@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -13,7 +14,6 @@ public class LoginForm_DALayer {
 
     private LoginForm_DALayer(){}
     private static String [] infoLine;
-    private static int currentIDNumberCount = 00000000;
 
     public static boolean checkPassword(String username, String password, String userType) {
         try {
@@ -49,7 +49,7 @@ public class LoginForm_DALayer {
         boolean alreadyExists = checkPassword(username, password, type);
         if(alreadyExists == false) {
             String commaDelimiter = ",";
-            String fullLine = "\n" + firstName + commaDelimiter + lastName + commaDelimiter + username + commaDelimiter + password + commaDelimiter + type + generateID();
+            String fullLine = "\n" + firstName + commaDelimiter + lastName + commaDelimiter + username + commaDelimiter + password + commaDelimiter + type + commaDelimiter + generateID();
             try {
                 FileOutputStream file;
                 if (type.equals("student"))
@@ -82,7 +82,8 @@ public class LoginForm_DALayer {
     }
 
     private static String generateID() {
-        return Integer.toString(currentIDNumberCount + 1);
+        Random random = new Random(System.nanoTime());
+        return Integer.toString(random.nextInt(1000000000));
     }
 
     public static String getUsername(){
