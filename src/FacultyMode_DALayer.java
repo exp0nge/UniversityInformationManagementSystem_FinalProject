@@ -18,6 +18,8 @@ public class FacultyMode_DALayer {
     private static List<String []> listOfStudentsFound;
     private static String [] listOfStudentsArray;
     private static String filepath;
+    private static String[] st_contactInfoArray;
+    private static String[] st_makeNewContactInfo;
 
     private FacultyMode_DALayer(){}
 
@@ -141,10 +143,10 @@ public class FacultyMode_DALayer {
         }
     }
 
-    private static void modifySTinfo(String stFile, String oldString, String newString){
+    private static void modifySTinfo(String oldString, String newString){
         if(oldString == null){
             try {
-                FileOutputStream fileOutputStream = new FileOutputStream(stFile, true);
+                FileOutputStream fileOutputStream = new FileOutputStream(filepath, true);
                 fileOutputStream.write(newString.getBytes());
             }
             catch (IOException e){
@@ -153,7 +155,7 @@ public class FacultyMode_DALayer {
         }
         else {
             try {
-                BufferedReader reader = new BufferedReader(new FileReader(new File(stFile)));
+                BufferedReader reader = new BufferedReader(new FileReader(new File(filepath)));
                 String s;
                 String totalString = "";
 
@@ -161,7 +163,7 @@ public class FacultyMode_DALayer {
                     totalString += s + "\n";
                 }
                 totalString = totalString.replace(oldString, newString);
-                FileWriter fw = new FileWriter(new File(stFile));
+                FileWriter fw = new FileWriter(new File(filepath));
                 fw.write(totalString);
                 fw.close();
             } catch (IOException e) {
@@ -172,42 +174,24 @@ public class FacultyMode_DALayer {
 
 
 
-    private static void contactInfo(String filepath) {
-        //Show panel to display contact info:
-        JFrame contactInfoFrame = new JFrame();
-        contactInfoFrame.setSize(380, 250);
-        contactInfoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        contactInfoFrame.setResizable(false);
-        JPanel contactInfoP = new JPanel(new MigLayout());
-        contactInfoFrame.getContentPane().add(contactInfoP);
+    public static void contactInfo() {
+
+        st_contactInfoArray = new String[5];
+        st_contactInfoArray[0] = "contact:,";
+        st_contactInfoArray[1] = "null";
+        st_contactInfoArray[2] = "null";
+        st_contactInfoArray[3] = "null";
+        st_contactInfoArray[4] = "null";
+
         //Check if info already available
-        String contactInfo = searchForLineInFile(filepath, "contact:");
+        String contactInfo = searchForLineInFile("contact:");
         if(contactInfo != null){
-            String [] contactInfoArray = contactInfo.split(",");
-            JLabel cellNubmerL = new JLabel("Cell #: " + contactInfoArray[1]);
-            JLabel addressL = new JLabel("Address: " + contactInfoArray[2]);
-            JLabel eName = new JLabel("Emergency Contact: " + contactInfoArray[3]);
-            JLabel eNumber = new JLabel("Emergency Number: " + contactInfoArray[4]);
-            contactInfoP.add(cellNubmerL, "wrap");
-            contactInfoP.add(addressL, "wrap");
-            contactInfoP.add(eName, "wrap");
-            contactInfoP.add(eNumber, "wrap");
+            st_contactInfoArray = contactInfo.split(",");
+
         }
-        JButton editCell = new JButton("Edit Cell #");
-        JButton editAddress = new JButton("Edit Address");
-        JButton editeName = new JButton("Edit E-Contact Name");
-        JButton editeNumber = new JButton("Edit E-Contact Number");
-
-
-
-        contactInfoP.add(editCell, "wrap");
-        contactInfoP.add(editAddress, "wrap");
-        contactInfoP.add(editeName, "wrap");
-        contactInfoP.add(editeNumber);
-        contactInfoFrame.setVisible(true);
     }
 
-    private static String searchForLineInFile(String filepath, String searchString) {
+    private static String searchForLineInFile(String searchString) {
         try{
             FileInputStream fileInputStream = new FileInputStream(filepath);
             Scanner scanner = new Scanner(fileInputStream);
@@ -227,5 +211,35 @@ public class FacultyMode_DALayer {
 
     public static String getST_filePath() {
         return filepath;
+    }
+
+    public static String[] getSt_contactInfoArray() {
+        return st_contactInfoArray;
+    }
+
+    public static void contactInfo_setCellNumber(String cellNumber) {
+        st_contactInfoArray[1] = cellNumber;
+        writeContactInfoToFile();
+
+    }
+
+    private static void writeContactInfoToFile() {
+        String checkIfExists = searchForLineInFile("contact:");
+        String contactInfoString = "contact:, " + st_contactInfoArray[1] + ", " +
+                st_contactInfoArray[2] + ", " + st_contactInfoArray[3] + ", " +
+                st_contactInfoArray[4] + "\n";
+        if(checkIfExists == null){
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(filepath, true);
+                fileOutputStream.write(contactInfoString.getBytes());
+                fileOutputStream.close();
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        else {
+            modifySTinfo(checkIfExists, contactInfoString);
+        }
     }
 }

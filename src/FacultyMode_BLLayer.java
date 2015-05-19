@@ -50,4 +50,17 @@ public class FacultyMode_BLLayer {
         ST_filePath = FacultyMode_DALayer.getST_filePath();
         return ST_filePath;
     }
+
+    public static void contactInfo() {
+        FacultyMode_DALayer.contactInfo();
+        FacultyMode_UILayer.loadContactInfoFrame();
+
+    }
+    public static String[] getOldContactInfo(){
+        return FacultyMode_DALayer.getSt_contactInfoArray();
+    }
+
+    public static void contactInfo_setCellNumber(String cellNumber) {
+        FacultyMode_DALayer.contactInfo_setCellNumber(cellNumber);
+    }
 }

@@ -114,6 +114,7 @@ public class FacultyMode_UILayer extends JFrame {
         //addContact Functionality
         addContactButton.addActionListener(ae -> {
             //FacultyMode_BLLayer.contactInfo(filepath);
+            FacultyMode_BLLayer.contactInfo();
 
         });
         //addScholarships Functionality
@@ -170,5 +171,49 @@ public class FacultyMode_UILayer extends JFrame {
         infoP.add(gradeReceivedTF, "growx, push, wrap");
         infoP.add(addClass);
         classInfoFrame.setVisible(true);
+    }
+    public static void loadContactInfoFrame(){
+        //Show panel to display contact info:
+        JFrame contactInfoFrame = new JFrame();
+        contactInfoFrame.setSize(380, 250);
+        contactInfoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        contactInfoFrame.setResizable(false);
+        JPanel contactInfoP = new JPanel(new MigLayout());
+        contactInfoFrame.getContentPane().add(contactInfoP);
+
+        JButton editCell = new JButton("Edit Cell #");
+        JButton editAddress = new JButton("Edit Address");
+        JButton editeName = new JButton("Edit E-Contact Name");
+        JButton editeNumber = new JButton("Edit E-Contact Number");
+
+        //event listeners
+        editCell.addActionListener(ae->{
+            String cellNumber = JOptionPane.showInputDialog(contactInfoP, "Enter a valid phone number (only digits)");
+            FacultyMode_BLLayer.contactInfo_setCellNumber(cellNumber);
+            //reload the frame
+            contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
+            loadContactInfoFrame();
+
+        });
+
+
+        //push them to panel
+        String [] contactInfoArray = FacultyMode_BLLayer.getOldContactInfo();
+        oldContactInfoExits(contactInfoP, contactInfoArray);
+        contactInfoP.add(editCell, "wrap");
+        contactInfoP.add(editAddress, "wrap");
+        contactInfoP.add(editeName, "wrap");
+        contactInfoP.add(editeNumber);
+        contactInfoFrame.setVisible(true);
+    }
+    public static void oldContactInfoExits(JPanel contactInfoP, String contactInfoArray[]){
+        JLabel cellNubmerL = new JLabel("Cell #: " + contactInfoArray[1]);
+        JLabel addressL = new JLabel("Address: " + contactInfoArray[2]);
+        JLabel eName = new JLabel("Emergency Contact: " + contactInfoArray[3]);
+        JLabel eNumber = new JLabel("Emergency Number: " + contactInfoArray[4]);
+        contactInfoP.add(cellNubmerL, "wrap");
+        contactInfoP.add(addressL, "wrap");
+        contactInfoP.add(eName, "wrap");
+        contactInfoP.add(eNumber, "wrap");
     }
 }
