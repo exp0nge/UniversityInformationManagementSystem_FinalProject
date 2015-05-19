@@ -220,14 +220,28 @@ public class FacultyMode_DALayer {
     public static void contactInfo_setCellNumber(String cellNumber) {
         st_contactInfoArray[1] = cellNumber;
         writeContactInfoToFile();
+    }
+    public static void contactInfo_setAddress(String address) {
+        st_contactInfoArray[2] = address;
+        writeContactInfoToFile();
+    }
+
+    public static void contactInfo_setEmergencyName(String emergencyName) {
+        st_contactInfoArray[3] = emergencyName;
+        writeContactInfoToFile();
+    }
+
+    public static void contactInfo_setEmergencyNumber(String emergencyNumber) {
+        st_contactInfoArray[4] = emergencyNumber;
+        writeContactInfoToFile();
 
     }
 
     private static void writeContactInfoToFile() {
         String checkIfExists = searchForLineInFile("contact:");
-        String contactInfoString = "contact:, " + st_contactInfoArray[1] + ", " +
+        String contactInfoString = "\n" + "contact:, " + st_contactInfoArray[1] + ", " +
                 st_contactInfoArray[2] + ", " + st_contactInfoArray[3] + ", " +
-                st_contactInfoArray[4] + "\n";
+                st_contactInfoArray[4];
         if(checkIfExists == null){
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(filepath, true);
@@ -242,4 +256,6 @@ public class FacultyMode_DALayer {
             modifySTinfo(checkIfExists, contactInfoString);
         }
     }
+
+
 }

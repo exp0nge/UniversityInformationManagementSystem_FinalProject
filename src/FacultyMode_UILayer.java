@@ -195,6 +195,28 @@ public class FacultyMode_UILayer extends JFrame {
             loadContactInfoFrame();
 
         });
+        editAddress.addActionListener(ae->{
+            String address = JOptionPane.showInputDialog(contactInfoP, "Enter a valid address (no commas)");
+            FacultyMode_BLLayer.contactInfo_setAddress(address);
+            //reload frame
+            contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
+            loadContactInfoFrame();
+        });
+        editeName.addActionListener(ae->{
+            String emergencyName = JOptionPane.showInputDialog(contactInfoP, "Enter a valid name of emergency contact");
+            FacultyMode_BLLayer.contactInfo_setEmergencyName(emergencyName);
+            //reload frame
+            contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
+            loadContactInfoFrame();
+        });
+        editeNumber.addActionListener(ae->{
+            String emergencyNumber = JOptionPane.showInputDialog(contactInfoP, "Enter a valid phone number (only digits)");
+            FacultyMode_BLLayer.contactInfo_setEmergencyNumber(emergencyNumber);
+            //reload frame
+            contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
+            loadContactInfoFrame();
+        });
+
 
 
         //push them to panel

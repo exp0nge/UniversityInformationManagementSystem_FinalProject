@@ -63,4 +63,16 @@ public class FacultyMode_BLLayer {
     public static void contactInfo_setCellNumber(String cellNumber) {
         FacultyMode_DALayer.contactInfo_setCellNumber(cellNumber);
     }
+
+    public static void contactInfo_setAddress(String address) {
+        FacultyMode_DALayer.contactInfo_setAddress(address);
+    }
+
+    public static void contactInfo_setEmergencyName(String emergencyName) {
+        FacultyMode_DALayer.contactInfo_setEmergencyName(emergencyName);
+    }
+
+    public static void contactInfo_setEmergencyNumber(String emergencyNumber) {
+        FacultyMode_DALayer.contactInfo_setEmergencyNumber(emergencyNumber);
+    }
 }
