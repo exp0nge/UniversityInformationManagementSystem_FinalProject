@@ -39,7 +39,7 @@ public class StudentMode_DALayer {
 
     private static void createInstanceOfStudent() {
         String [] stInfoArray = accountInfoList.get(1).split(",");
-        student = new Student(stInfoArray[0], stInfoArray[1], 4.0, Integer.parseInt(stInfoArray[5].replace(" ", ""))); //TODO: Implement a way for faculty to add GPA/IDNUMBER
+        student = new Student(stInfoArray[0], stInfoArray[1], 4.0, Integer.parseInt(stInfoArray[5].replace(" ", "")));
     }
 
     protected static String getName(){

@@ -7,6 +7,8 @@ import java.util.List;
  * Created by MD on 5/15/2015.
  */
 public class FacultyMode_BLLayer {
+    private static String ST_filePath;
+
     private FacultyMode_BLLayer(){}
     public static String getName() {
         return FacultyMode_DALayer.getName();
@@ -22,24 +24,30 @@ public class FacultyMode_BLLayer {
             jPane.removeAll();
             jPane.updateUI();
             List<String []> listOfFoundStudents = FacultyMode_DALayer.getListOfStudentsFound();
-            for(String [] element : listOfFoundStudents){
-                JButton stButton = new JButton(element[0] + " " + element[1]);
-                stButton.addActionListener(ae -> {
-                    openStudentPanel(element[2], jPane);
-
-                });
-                jPane.add(stButton, "wrap");
-                jPane.updateUI();
-            }
+            FacultyMode_UILayer.pushFoundStudentsButtons(listOfFoundStudents, jPane);
         }
         else {
             JOptionPane.showMessageDialog(jPane, "Not found...");
         }
     }
 
-    private static void openStudentPanel(String s, JPanel jPane) {
+    public static void openStudentPanel(String s, JPanel jPane) {
         jPane.removeAll();
         jPane.updateUI();
         FacultyMode_DALayer.openStudentPanel(s, jPane);
+    }
+
+
+    public static void makeStudentNameJL(String textJL, JPanel jPane) {
+        FacultyMode_UILayer.makeStudentNameJL(textJL, jPane);
+    }
+
+    public static void openStudentClassOptionButtons(JPanel jPane, String stUsername) {
+        FacultyMode_UILayer.openStudentClassOptionsButtons(jPane, stUsername);
+    }
+
+    public static String getST_filePath() {
+        ST_filePath = FacultyMode_DALayer.getST_filePath();
+        return ST_filePath;
     }
 }
