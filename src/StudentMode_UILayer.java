@@ -3,7 +3,6 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,7 @@ public class StudentMode_UILayer extends JFrame {
     private static String username;
     private static List<String []> listOfCourseInfo;
     private static StudentMode_UILayer inst; //Singleton
-    private final String firstItemInDepartments = "computer_science";
+    private final String firstItemInDepartments = "Computer Science";
 
     private StudentMode_UILayer(){
         StudentMode_BLLayer.setStudentInfo();

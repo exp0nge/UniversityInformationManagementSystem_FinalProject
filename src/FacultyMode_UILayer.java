@@ -232,11 +232,24 @@ public class FacultyMode_UILayer extends JFrame {
         classInfoFrame.setResizable(false);
         JPanel infoP = new JPanel(new MigLayout());
         classInfoFrame.getContentPane().add(infoP);
+        JLabel classDeptL = new JLabel("Department: ");
+        //Add department list to combobox
+        String [] deptList = StudentMode_BLLayer.getListOfDepartments();
+        JComboBox<String> deptListCBox = new JComboBox<>(deptList);
 
         JLabel classNameL = new JLabel("Class name: ");
-        JTextField classNameTF = new JTextField();
-        JLabel classDeptL = new JLabel("Department: ");
-        JTextField classDeptTF = new JTextField();
+        JComboBox<String> listOfCoursesCBox = new JComboBox<>(StudentMode_BLLayer.getListOfCourses("Computer Science"));
+
+        deptListCBox.addActionListener(ae -> {
+            String[] selCourseList = StudentMode_BLLayer.getListOfCourses((String) deptListCBox.getSelectedItem());
+            listOfCoursesCBox.removeAllItems();
+            for (int i = 0; i < selCourseList.length; i++) {
+                listOfCoursesCBox.addItem(selCourseList[i]);
+            }
+        });
+
+
+
         JLabel gradeReceivedL = new JLabel("Grade received: ");
         JTextField gradeReceivedTF = new JTextField("N/A");
 
@@ -244,26 +257,22 @@ public class FacultyMode_UILayer extends JFrame {
         addClass.addActionListener(ae ->{
             try{
                 FileOutputStream fileOutputStream = new FileOutputStream(FacultyMode_BLLayer.getST_filePath(), true);
-                if (classDeptTF.getText().length() < 3 || classDeptTF.getText().length() < 2)
-                {
-                    JOptionPane.showMessageDialog(infoP, "Invalid input parameters");
-                }
-                else {
-                    String newClassString = "\n" + "class:," + classNameTF.getText() + ", " + classDeptTF.getText() + ", " + gradeReceivedTF.getText();
-                    fileOutputStream.write(newClassString.getBytes());
-                    FacultyMode_BLLayer.openStudentPanel(stUserName, jPane);
-                    classInfoFrame.dispatchEvent(new WindowEvent(classInfoFrame, WindowEvent.WINDOW_CLOSING));
-                }
+
+                String newClassString = "\n" + "class:," + listOfCoursesCBox.getSelectedItem().toString() + ", " + deptListCBox.getSelectedItem().toString() + ", " + gradeReceivedTF.getText();
+                fileOutputStream.write(newClassString.getBytes());
+                FacultyMode_BLLayer.openStudentPanel(stUserName, jPane);
+                classInfoFrame.dispatchEvent(new WindowEvent(classInfoFrame, WindowEvent.WINDOW_CLOSING));
+
             }
             catch (IOException e){
                 e.printStackTrace();
             }
         });
         infoP.getRootPane().setDefaultButton(addClass);
-        infoP.add(classNameL);
-        infoP.add(classNameTF, "growx, push, wrap");
         infoP.add(classDeptL);
-        infoP.add(classDeptTF, "growx, push, wrap");
+        infoP.add(deptListCBox, "growx, push, wrap");
+        infoP.add(classNameL);
+        infoP.add(listOfCoursesCBox, "growx, push, wrap");
         infoP.add(gradeReceivedL);
         infoP.add(gradeReceivedTF, "growx, push, wrap");
         infoP.add(addClass);
