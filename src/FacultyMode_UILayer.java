@@ -26,7 +26,7 @@ public class FacultyMode_UILayer extends JFrame {
         Dimension minSizeUI = new Dimension(500, 450);
         JFrame frame = new JFrame("Faculty mode");
         frame.setSize(540, 560);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
 
 
@@ -59,6 +59,7 @@ public class FacultyMode_UILayer extends JFrame {
                 new LC().wrapAfter(6)
         );
         JPanel searchResultsPanel = new JPanel(searchPanelManager);
+        //Go button
         JButton searchButton = new JButton("GO");
         searchButton.addActionListener(ae -> {
             searchButton.setEnabled(false); //turn off GO button
@@ -71,12 +72,73 @@ public class FacultyMode_UILayer extends JFrame {
         searchComponent.add(searchResultsPanel, "span");
         tabbedPane.addTab("Students", searchComponent);
 
+        //Payroll Tab
+        JComponent facultyPayroll = new JPanel(new MigLayout());
+
+        //Add hours button stuff
+        JButton addHours = new JButton("Add clocked hours");
+        addHours.addActionListener(ae->{
+            addNewHoursToPayroll(facultyPayroll);
+
+        });
+        facultyPayroll.add(addHours, "wrap");
+
+        //Fetch previous inputted hours
+        fetchPreviousClockedHours(facultyPayroll);
+        tabbedPane.addTab("Payroll", facultyPayroll);
+
+
         pane.add(helloNameLabel, "wrap");
         pane.add(tabbedPane, "span");
 
         frame.setVisible(true);
 
     }
+
+    private void fetchPreviousClockedHours(JComponent facultyPayroll) {
+        List<String> hoursWorkedList = FacultyMode_BLLayer.getListOfWorkedHours();
+        if(hoursWorkedList.size() > 0){
+            for(String element : hoursWorkedList){
+                JLabel clockedHours = new JLabel(element);
+                facultyPayroll.add(clockedHours, "span, wrap");
+            }
+        }
+    }
+
+    private void addNewHoursToPayroll(JComponent facultyPayroll) {
+        JFrame miniFrame = new JFrame("Add hours");
+        miniFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        miniFrame.setSize(200, 250);
+        JPanel panel = new JPanel(new MigLayout());
+        miniFrame.getContentPane().add(panel);
+
+        JLabel startDay = new JLabel("Start day:");
+        JLabel endDay = new JLabel("End day:");
+        JLabel hoursWorked = new JLabel("Hours worked:");
+
+        JTextField startDayTF = new JTextField();
+        JTextField endDayTF = new JTextField();
+        JTextField hoursWorkedTF = new JTextField();
+
+        //Submit button
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(ae->{
+            FacultyMode_BLLayer.addNewHoursWorked(startDayTF.getText(), endDayTF.getText(), hoursWorkedTF.getText());
+            JOptionPane.showMessageDialog(miniFrame, "Hours added!");
+            fetchPreviousClockedHours(facultyPayroll);
+            miniFrame.dispatchEvent(new WindowEvent(miniFrame, WindowEvent.WINDOW_CLOSING));
+        });
+
+        panel.add(startDay);
+        panel.add(startDayTF, "push, growx, wrap");
+        panel.add(endDay);
+        panel.add(endDayTF, "push, growx, wrap");
+        panel.add(hoursWorked);
+        panel.add(hoursWorkedTF, "push, growx, wrap");
+        panel.add(submitButton, "span");
+        miniFrame.setVisible(true);
+    }
+
 
     public static FacultyMode_UILayer getInst() {
         if(inst == null)
@@ -119,7 +181,7 @@ public class FacultyMode_UILayer extends JFrame {
         });
         //addScholarships Functionality
         addScholarshipsButton.addActionListener(ae -> {
-
+            FacultyMode_BLLayer.scholarships();
         });
 
         jPane.add(addClassButton, "wrap");
@@ -237,5 +299,30 @@ public class FacultyMode_UILayer extends JFrame {
         contactInfoP.add(addressL, "wrap");
         contactInfoP.add(eName, "wrap");
         contactInfoP.add(eNumber, "wrap");
+    }
+
+    public static void loadScholarships(List<String> listOfScholarships) {
+        JFrame frame = new JFrame("Scholarships");
+        frame.setSize(200, 400);
+        frame.setResizable(false);
+
+        JPanel panel = new JPanel(new MigLayout());
+        frame.getContentPane().add(panel);
+        //iterate through to add JLabels for each scholarship
+        for(int i = 0; i < listOfScholarships.size(); i ++){
+            JLabel scholarship = new JLabel(listOfScholarships.get(i));
+            panel.add(scholarship, "wrap");
+        }
+
+        JButton addScholarship = new JButton("Add scholarship");
+        addScholarship.addActionListener(ae -> {
+            String scholarshipName = JOptionPane.showInputDialog(panel, "Enter name of scholarship:");
+            FacultyMode_BLLayer.addScholarship(scholarshipName);
+            JOptionPane.showMessageDialog(panel, "New scholarship added");
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        });
+
+        panel.add(addScholarship);
+        frame.setVisible(true);
     }
 }

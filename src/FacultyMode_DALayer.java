@@ -1,8 +1,4 @@
-import net.miginfocom.swing.MigLayout;
-
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +13,10 @@ public class FacultyMode_DALayer {
     private static Faculty facultyInst;
     private static List<String []> listOfStudentsFound;
     private static String [] listOfStudentsArray;
-    private static String filepath;
+    private static String st_filepath;
     private static String[] st_contactInfoArray;
-    private static String[] st_makeNewContactInfo;
+    private static List<String> st_scholarshipList;
+    private static List<String> listOfWorkedHours;
 
     private FacultyMode_DALayer(){}
 
@@ -88,8 +85,8 @@ public class FacultyMode_DALayer {
         try{
             jPane.removeAll();
             jPane.updateUI();
-            filepath = "accounts/st/" + stUserName + ".csv";
-            FileInputStream stFile = new FileInputStream(filepath);
+            st_filepath = "accounts/st/" + stUserName + ".csv";
+            FileInputStream stFile = new FileInputStream(st_filepath);
             Scanner scanner = new Scanner(stFile);
             String line;
             while(scanner.hasNextLine()){
@@ -100,14 +97,14 @@ public class FacultyMode_DALayer {
                     FacultyMode_BLLayer.makeStudentNameJL(stNameLabel, jPane);
                     //Add options for new class/contact/awards
                     FacultyMode_BLLayer.openStudentClassOptionButtons(jPane, stUserName);
-                    //openStudentClassOptionButtons(filepath, jPane, stUserName);
+                    //openStudentClassOptionButtons(st_filepath, jPane, stUserName);
                 }
                 if(line.contains("class:")){
                     String [] classInfo = line.split(",");
                     String classInfoString = "Class: " + classInfo[1] + ", Department: " + classInfo[2] + ", Grade: " + classInfo[3];
                     JLabel classInfoJL = new JLabel(classInfoString);
                     JButton editGrade = new JButton("Modify Grade");
-                    final String xfilePath = filepath;
+                    final String xfilePath = st_filepath;
                     editGrade.addActionListener(ae -> {
                         String replacementGrade = JOptionPane.showInputDialog(jPane, "Input new grade: ");
                         modifyStGrade(xfilePath, classInfo, replacementGrade);
@@ -144,9 +141,9 @@ public class FacultyMode_DALayer {
     }
 
     private static void modifySTinfo(String oldString, String newString){
-        if(oldString == null){
+        if(oldString == null || oldString.equals("")){
             try {
-                FileOutputStream fileOutputStream = new FileOutputStream(filepath, true);
+                FileOutputStream fileOutputStream = new FileOutputStream(st_filepath, true);
                 fileOutputStream.write(newString.getBytes());
             }
             catch (IOException e){
@@ -155,7 +152,7 @@ public class FacultyMode_DALayer {
         }
         else {
             try {
-                BufferedReader reader = new BufferedReader(new FileReader(new File(filepath)));
+                BufferedReader reader = new BufferedReader(new FileReader(new File(st_filepath)));
                 String s;
                 String totalString = "";
 
@@ -163,7 +160,7 @@ public class FacultyMode_DALayer {
                     totalString += s + "\n";
                 }
                 totalString = totalString.replace(oldString, newString);
-                FileWriter fw = new FileWriter(new File(filepath));
+                FileWriter fw = new FileWriter(new File(st_filepath));
                 fw.write(totalString);
                 fw.close();
             } catch (IOException e) {
@@ -193,7 +190,7 @@ public class FacultyMode_DALayer {
 
     private static String searchForLineInFile(String searchString) {
         try{
-            FileInputStream fileInputStream = new FileInputStream(filepath);
+            FileInputStream fileInputStream = new FileInputStream(st_filepath);
             Scanner scanner = new Scanner(fileInputStream);
             String line;
             while(scanner.hasNextLine()){
@@ -210,7 +207,7 @@ public class FacultyMode_DALayer {
     }
 
     public static String getST_filePath() {
-        return filepath;
+        return st_filepath;
     }
 
     public static String[] getSt_contactInfoArray() {
@@ -244,7 +241,7 @@ public class FacultyMode_DALayer {
                 st_contactInfoArray[4];
         if(checkIfExists == null){
             try {
-                FileOutputStream fileOutputStream = new FileOutputStream(filepath, true);
+                FileOutputStream fileOutputStream = new FileOutputStream(st_filepath, true);
                 fileOutputStream.write(contactInfoString.getBytes());
                 fileOutputStream.close();
             }
@@ -258,4 +255,78 @@ public class FacultyMode_DALayer {
     }
 
 
+    public static void scholarships() {
+        String scholarshipLine = searchForLineInFile("scholarships");
+        if(st_scholarshipList == null)
+            st_scholarshipList = new ArrayList<>();
+        st_scholarshipList.clear(); //clear list
+        if(scholarshipLine != null){
+            String [] tempArrayForScholarships = scholarshipLine.split(",");
+            for(int i = 1; i < tempArrayForScholarships.length; i++){
+                st_scholarshipList.add(tempArrayForScholarships[i]);
+            }
+        }
+
+    }
+    public static List<String> getSt_scholarshipList(){
+        return st_scholarshipList;
+    }
+
+    public static void addScholarship(String scholarshipName) {
+        if(st_scholarshipList.size() == 0){
+            String newScholarshipLine = "\n" + "scholarships:," + scholarshipName;
+            writeScholarshipInfoToFile(newScholarshipLine);
+        }
+        else{
+            String oldScholarshipLine = "scholarships:,";
+            for(int i = 0; i < st_scholarshipList.size(); i++){
+                oldScholarshipLine = oldScholarshipLine + "," + st_scholarshipList.get(i);
+            }
+            modifySTinfo(oldScholarshipLine, (oldScholarshipLine + ", " + scholarshipName));
+        }
+    }
+
+    private static void writeScholarshipInfoToFile(String newScholarshipLine) {
+        try{
+            FileOutputStream fileOutputStream = new FileOutputStream(st_filepath, true);
+            fileOutputStream.write(newScholarshipLine.getBytes());
+            fileOutputStream.close();
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void addNewHoursWorked(String startDayTFText, String endDayTFText, String hoursWorkedTFText) {
+        try{
+            FileOutputStream fileOutputStream = new FileOutputStream("accounts/faculty/" + username + ".csv", true);
+            String newHoursWorkedLine = "\n" + "hours:," + startDayTFText + "," + endDayTFText + ","
+                    + hoursWorkedTFText;
+            fileOutputStream.write(newHoursWorkedLine.getBytes());
+            fileOutputStream.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static List<String> getListOfWorkedHours() {
+        List<String> listOfHoursWorked = new ArrayList<>();
+        try{
+            FileInputStream fileInputStream = new FileInputStream("accounts/faculty/" + username + ".csv");
+            Scanner scanner = new Scanner(fileInputStream);
+            String line;
+            while(scanner.hasNextLine()){
+                line = scanner.nextLine();
+                if(line.contains("hours")){
+                    listOfHoursWorked.add(line);
+                }
+            }
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return listOfHoursWorked;
+    }
 }

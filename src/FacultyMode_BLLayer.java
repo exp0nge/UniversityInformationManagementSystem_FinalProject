@@ -75,4 +75,33 @@ public class FacultyMode_BLLayer {
     public static void contactInfo_setEmergencyNumber(String emergencyNumber) {
         FacultyMode_DALayer.contactInfo_setEmergencyNumber(emergencyNumber);
     }
+
+    public static void scholarships() {
+        FacultyMode_DALayer.scholarships();
+        FacultyMode_UILayer.loadScholarships(getListOfScolarships());
+    }
+
+    public static List<String> getListOfScolarships(){
+        return FacultyMode_DALayer.getSt_scholarshipList();
+    }
+
+    public static void addScholarship(String scholarshipName) {
+        FacultyMode_DALayer.addScholarship(scholarshipName);
+    }
+
+    public static void addNewHoursWorked(String startDayTFText, String endDayTFText, String hoursWorkedTFText) {
+        FacultyMode_DALayer.addNewHoursWorked(startDayTFText, endDayTFText, hoursWorkedTFText);
+    }
+
+    public static List<String> getListOfWorkedHours() {
+        List<String> listOfHoursWorked = FacultyMode_DALayer.getListOfWorkedHours();
+        String line;
+        for(int i = 0; i < listOfHoursWorked.size(); i++){
+            line = listOfHoursWorked.get(i);
+            line = line.replace("hours:", "Clocked in event:");
+            line = line.replace(",", " ");
+            listOfHoursWorked.set(i, line);
+        }
+        return listOfHoursWorked;
+    }
 }
