@@ -91,6 +91,7 @@ public class Register_UILayer {
                LoginForm_BLLayer.registerNewEntity(frame, firstNameTF.getText(), lastNameTF.getText(), usernameTF.getText(), passwordTF.getText());
             }
         });
+        panel.getRootPane().setDefaultButton(submitButton);
         panel.add(submitButton, c);
 
         frame.setVisible(true);

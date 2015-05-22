@@ -9,6 +9,7 @@ import java.awt.event.WindowEvent;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by MD on 5/15/2015.
@@ -80,14 +81,19 @@ public class FacultyMode_UILayer extends JFrame {
         //Add hours button stuff
         JButton addHours = new JButton("Add clocked hours");
         addHours.addActionListener(ae->{
-            addNewHoursToPayroll(facultyPayroll);
+            addNewHoursToPayroll(facultyPayroll, addHours);
 
         });
         facultyPayroll.add(addHours, "wrap");
 
         //Fetch previous inputted hours
-        fetchPreviousClockedHours(facultyPayroll);
+        fetchPreviousClockedHours(facultyPayroll, addHours);
         tabbedPane.add(new JScrollPane(facultyPayroll), "Payroll");
+
+        //Calender RSS feed
+        JComponent calenderEventsPanel = new JPanel(new MigLayout());
+        fetchCalenderEvents(calenderEventsPanel);
+        tabbedPane.add(new JScrollPane(calenderEventsPanel), "Upcoming events");
 
 
         pane.add(helloNameLabel, "wrap");
@@ -97,20 +103,39 @@ public class FacultyMode_UILayer extends JFrame {
 
     }
 
-    private void fetchPreviousClockedHours(JComponent facultyPayroll) {
+    private void fetchCalenderEvents(JComponent calenderEventsPanel) {
+        Map<String, String> listOfCalenderEvents = FacultyMode_BLLayer.getListOfCalenderEvents();
+        for(Map.Entry<String, String> entry : listOfCalenderEvents.entrySet()){
+            JLabel title = new JLabel(entry.getKey());
+            String [] descriptElements = entry.getValue().split("!");
+            JLabel time = new JLabel(descriptElements[0]);
+            JLabel event = new JLabel(descriptElements[1]);
+
+            calenderEventsPanel.add(title, "span, wrap");
+            calenderEventsPanel.add(time, "span, wrap");
+            calenderEventsPanel.add(event, "span, wrap");
+            calenderEventsPanel.add(new JSeparator(), "growx, span, wrap");
+        }
+    }
+
+    private void fetchPreviousClockedHours(JComponent facultyPayroll, JButton addHours) {
+        facultyPayroll.removeAll();
+        facultyPayroll.add(addHours, "wrap");
         List<String> hoursWorkedList = FacultyMode_BLLayer.getListOfWorkedHours();
         if(hoursWorkedList.size() > 0){
             for(String element : hoursWorkedList){
                 JLabel clockedHours = new JLabel(element);
                 facultyPayroll.add(clockedHours, "span, wrap");
+                facultyPayroll.add(new JSeparator(), "span, growx, wrap");
             }
         }
     }
 
-    private void addNewHoursToPayroll(JComponent facultyPayroll) {
+    private void addNewHoursToPayroll(JComponent facultyPayroll, JButton addHours) {
         JFrame miniFrame = new JFrame("Add hours");
         miniFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        miniFrame.setSize(200, 250);
+        miniFrame.setSize(200, 200);
+        miniFrame.setResizable(false);
         JPanel panel = new JPanel(new MigLayout());
         miniFrame.getContentPane().add(panel);
 
@@ -127,9 +152,10 @@ public class FacultyMode_UILayer extends JFrame {
         submitButton.addActionListener(ae->{
             FacultyMode_BLLayer.addNewHoursWorked(startDayTF.getText(), endDayTF.getText(), hoursWorkedTF.getText());
             JOptionPane.showMessageDialog(miniFrame, "Hours added!");
-            fetchPreviousClockedHours(facultyPayroll);
+            fetchPreviousClockedHours(facultyPayroll, addHours);
             miniFrame.dispatchEvent(new WindowEvent(miniFrame, WindowEvent.WINDOW_CLOSING));
         });
+        panel.getRootPane().setDefaultButton(submitButton);
 
         panel.add(startDay);
         panel.add(startDayTF, "push, growx, wrap");

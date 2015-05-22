@@ -6,6 +6,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by MD on 5/9/2015.
@@ -98,17 +99,37 @@ public class StudentMode_UILayer extends JFrame {
         planSchedulePanel.add(viewPreviousCoursesButton);
         planSchedulePanel.add(saveCourseButton);
 
+        //Events RSS feed
+        JComponent eventsRSS = new JPanel(new MigLayout());
+        fetchRSSEvents(eventsRSS);
+
         //Adding tabbedPane + helloStudent label
-        tabbedPane.addTab("Student Info", infoPanel);
+        tabbedPane.addTab("Summary", infoPanel);
         tabbedPane.add(new JScrollPane(coursesPanel), "Courses");
         tabbedPane.add(new JScrollPane(courseGradesPanel), "Grades");
         tabbedPane.add(new JScrollPane(planSchedulePanel), "Planner");
+        tabbedPane.add(new JScrollPane(eventsRSS), "Events");
 
         panel.add(ccnyBanner, "span, wrap");
         panel.add(helloStudent, "wrap");
         panel.add(tabbedPane);
 
         frame.setVisible(true);
+    }
+
+    private void fetchRSSEvents(JComponent eventsRSS) {
+        Map<String, String> listOfCalenderEvents = FacultyMode_BLLayer.getListOfCalenderEvents();
+        for(Map.Entry<String, String> entry : listOfCalenderEvents.entrySet()){
+            JLabel title = new JLabel(entry.getKey());
+            String [] descriptElements = entry.getValue().split("!");
+            JLabel time = new JLabel(descriptElements[0]);
+            JLabel event = new JLabel(descriptElements[1]);
+
+            eventsRSS.add(title, "span, wrap");
+            eventsRSS.add(time, "span, wrap");
+            eventsRSS.add(event, "span, wrap");
+            eventsRSS.add(new JSeparator(), "growx, span, wrap");
+        }
     }
 
     private void viewSavedCourses(JComponent courseGradesPanel) {
@@ -184,16 +205,19 @@ public class StudentMode_UILayer extends JFrame {
             JLabel courseDept = new JLabel("Department: " + element[2]);
             coursesPanel.add(courseTitle, "span, wrap");
             coursesPanel.add(courseDept, "span, wrap");
+            coursesPanel.add(new JSeparator(), "span, growx, wrap");
         }
     }
     private void loadCourseGrades(JComponent coursesPanel){
         if(listOfCourseInfo == null)
             listOfCourseInfo = StudentMode_BLLayer.getListOfCourseInfo();
+
         for(String [] element : listOfCourseInfo){
             JLabel courseTitle = new JLabel("Course: " + element[1]);
             JLabel courseGrade = new JLabel("Grade: " + element[3]);
             coursesPanel.add(courseTitle, "span, wrap");
             coursesPanel.add(courseGrade, "span, wrap");
+            coursesPanel.add(new JSeparator(), "span, growx, wrap");
         }
 
     }

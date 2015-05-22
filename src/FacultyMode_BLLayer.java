@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by MD on 5/15/2015.
@@ -103,4 +104,7 @@ public class FacultyMode_BLLayer {
         return listOfHoursWorked;
     }
 
+    public static Map<String, String> getListOfCalenderEvents() {
+        return FacultyMode_DALayer.getListOfCalenderEvents();
+    }
 }

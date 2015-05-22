@@ -1,8 +1,13 @@
 import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.synd.SyndFeed;
+import com.sun.syndication.io.SyndFeedInput;
+import com.sun.syndication.io.XmlReader;
+import java.net.URL;
+import java.util.Iterator;
+
 
 /**
  * Created by MD on 5/15/2015.
@@ -16,7 +21,7 @@ public class FacultyMode_DALayer {
     private static String st_filepath;
     private static String[] st_contactInfoArray;
     private static List<String> st_scholarshipList;
-    private static List<String> listOfWorkedHours;
+
 
     private FacultyMode_DALayer(){}
 
@@ -330,4 +335,26 @@ public class FacultyMode_DALayer {
         return listOfHoursWorked;
     }
 
+    public static Map<String, String> getListOfCalenderEvents() {
+        Map<String, String> listOfCalenderEvents = new HashMap<>();
+        try {
+            URL url = new URL("http://www.ccny.cuny.edu/calendar/rss.cfm?xml=Calendar%20of%20Events%20RSS,RSS2.0");
+            SyndFeedInput input = new SyndFeedInput();
+
+            SyndFeed feed = input.build(new XmlReader(url));
+
+            for (Iterator i = feed.getEntries().iterator(); i.hasNext();)
+            {
+                SyndEntry entry = (SyndEntry) i.next();
+                String descriptionOfEvent = entry.getPublishedDate() + "!" + entry.getDescription().getValue().replace("\n", "-");
+                listOfCalenderEvents.put(entry.getTitle(), descriptionOfEvent);
+            }
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return listOfCalenderEvents;
+    }
 }
