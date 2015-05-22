@@ -104,7 +104,6 @@ public class StudentMode_UILayer extends JFrame {
         tabbedPane.add(new JScrollPane(courseGradesPanel), "Grades");
         tabbedPane.add(new JScrollPane(planSchedulePanel), "Planner");
 
-
         panel.add(ccnyBanner, "span, wrap");
         panel.add(helloStudent, "wrap");
         panel.add(tabbedPane);
