@@ -26,13 +26,19 @@ public class FacultyMode_UILayer extends JFrame {
     private void initComponents() {
         Dimension minSizeUI = new Dimension(500, 450);
         JFrame frame = new JFrame("Faculty mode");
-        frame.setSize(540, 560);
+        frame.setSize(550, 700);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
 
 
         JPanel pane = new JPanel(new MigLayout());
         frame.getContentPane().add(pane);
+
+        //CCNY banner
+        JLabel bannerIcon = new JLabel();
+        bannerIcon.setIcon(new ImageIcon("ccnyBanner2.png"));
+        pane.add(bannerIcon, "span, wrap");
+
 
         //Hello "user" label
         String helloString = "Hello " + FacultyMode_BLLayer.getName() + ",";
