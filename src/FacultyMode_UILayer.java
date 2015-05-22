@@ -1,5 +1,6 @@
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
@@ -7,7 +8,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
 
 /**

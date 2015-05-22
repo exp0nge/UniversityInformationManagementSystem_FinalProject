@@ -1,7 +1,4 @@
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Created by MD on 5/9/2015.
@@ -49,5 +46,25 @@ public class StudentMode_BLLayer {
 
     public static List<String []> getListOfCourseInfo() {
         return StudentMode_DALayer.getListOfCourseInfo();
+    }
+
+    public static String[] getListOfDepartments() {
+        return StudentMode_DALayer.getListOfDepartments();
+    }
+
+    public static String[] getListOfCourses(String department) {
+        return StudentMode_DALayer.getCourseList(department);
+    }
+
+    public static boolean savePlannedCourse(String deptComboBoxSelectedItem, String coursesOfferedInDeptSelectedItem) {
+        return StudentMode_DALayer.savePlannedCourse(deptComboBoxSelectedItem, coursesOfferedInDeptSelectedItem);
+    }
+
+    public static String[] getArraySavedCourses() {
+        return StudentMode_DALayer.getArraySavedCourses();
+    }
+
+    public static void clearSavedCourses() {
+        StudentMode_DALayer.clearSavedCourseHistory();
     }
 }

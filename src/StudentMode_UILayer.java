@@ -1,9 +1,10 @@
+import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 /**
@@ -13,6 +14,8 @@ public class StudentMode_UILayer extends JFrame {
     private static String username;
     private static List<String []> listOfCourseInfo;
     private static StudentMode_UILayer inst; //Singleton
+    private final String firstItemInDepartments = "computer_science";
+
     private StudentMode_UILayer(){
         StudentMode_BLLayer.setStudentInfo();
         initComponents();
@@ -51,6 +54,15 @@ public class StudentMode_UILayer extends JFrame {
         //E-contact info
         fetchContactInfo(infoPanel);
 
+        //Logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(ae->{
+            int response = JOptionPane.showConfirmDialog(frame, "Are you sure you want to logout?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
+            if(response == JOptionPane.YES_OPTION)
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        });
+        infoPanel.add(logoutButton);
+
         //Classes tab
         JComponent coursesPanel = new JPanel(new MigLayout());
         TitledBorder coursePanelTitleBorder = BorderFactory.createTitledBorder("Course list");
@@ -61,10 +73,36 @@ public class StudentMode_UILayer extends JFrame {
         JComponent courseGradesPanel = new JPanel(new MigLayout());
         loadCourseGrades(courseGradesPanel);
 
+        //Make schedule
+        JComponent planSchedulePanel = new JPanel(new MigLayout());
+
+        //make combobox of departments
+        JComboBox<String> deptComboBox = departmentComboBox(planSchedulePanel);
+        JComboBox<String> coursesOfferedInDept = new JComboBox<>(StudentMode_BLLayer.getListOfCourses(firstItemInDepartments));
+        planSchedulePanel.add(coursesOfferedInDept, "wrap");
+
+        deptComboBox.addActionListener(ae->{
+            String [] selCourseList = StudentMode_BLLayer.getListOfCourses((String)deptComboBox.getSelectedItem());
+            addToCourseComboBox(coursesOfferedInDept, selCourseList);
+        });
+
+        //View previously added and add buttons
+        JButton viewPreviousCoursesButton = new JButton("View saved");
+        JButton saveCourseButton = new JButton("Save course");
+        viewPreviousCoursesButton.addActionListener(ae->{
+            viewSavedCourses(courseGradesPanel);
+        });
+        saveCourseButton.addActionListener(ae->{
+            saveSelectedCourse(courseGradesPanel, deptComboBox, coursesOfferedInDept);
+        });
+        planSchedulePanel.add(viewPreviousCoursesButton);
+        planSchedulePanel.add(saveCourseButton);
+
         //Adding tabbedPane + helloStudent label
         tabbedPane.addTab("Student Info", infoPanel);
         tabbedPane.add(new JScrollPane(coursesPanel), "Courses");
         tabbedPane.add(new JScrollPane(courseGradesPanel), "Grades");
+        tabbedPane.add(new JScrollPane(planSchedulePanel), "Planner");
 
 
         panel.add(ccnyBanner, "span, wrap");
@@ -72,6 +110,71 @@ public class StudentMode_UILayer extends JFrame {
         panel.add(tabbedPane);
 
         frame.setVisible(true);
+    }
+
+    private void viewSavedCourses(JComponent courseGradesPanel) {
+        JFrame savedCourseFrame = new JFrame("Saved courses");
+        savedCourseFrame.setDefaultCloseOperation(savedCourseFrame.DISPOSE_ON_CLOSE);
+        savedCourseFrame.setSize(325, 300);
+        savedCourseFrame.setResizable(false);
+
+        JPanel panel = new JPanel(new MigLayout());
+        savedCourseFrame.getContentPane().add(new JScrollPane(panel));
+        //Button to clear saved courses
+        JButton clearSavedButton = new JButton("Clear list");
+        clearSavedButton.addActionListener(ae->{
+            int response = JOptionPane.showConfirmDialog(savedCourseFrame, "***WARNING***\nAre you sure you want to delete?\n***NO WAY TO UNDO****",
+                    "Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
+            if(response == JOptionPane.YES_OPTION) {
+                StudentMode_BLLayer.clearSavedCourses();
+                savedCourseFrame.dispatchEvent(new WindowEvent(savedCourseFrame, WindowEvent.WINDOW_CLOSING));
+            }
+        });
+        panel.add(clearSavedButton, "wrap");
+
+        MigLayout listOfCoursesLayoutMang = new MigLayout(
+                new LC().wrapAfter(2)
+        );
+        JPanel listOfCourses = new JPanel(listOfCoursesLayoutMang);
+        TitledBorder listOfCoursesTB = new TitledBorder("Course list");
+        listOfCourses.setBorder(listOfCoursesTB);
+        String [] savedCourses = StudentMode_BLLayer.getArraySavedCourses();
+        if(savedCourses != null){
+            for(int i = 1; i < savedCourses.length; i++){
+                JLabel courseInfo = new JLabel(savedCourses[i]);
+                listOfCourses.add(courseInfo);
+            }
+        }
+        else{
+            JLabel noSavedCoursesLabel = new JLabel("No courses saved.");
+            listOfCourses.add(noSavedCoursesLabel);
+        }
+        panel.add(listOfCourses);
+        savedCourseFrame.setVisible(true);
+
+    }
+
+    private void saveSelectedCourse(JComponent courseGradesPanel, JComboBox<String> deptComboBox, JComboBox<String> coursesOfferedInDept) {
+        if(StudentMode_BLLayer.savePlannedCourse((String)deptComboBox.getSelectedItem(), (String)coursesOfferedInDept.getSelectedItem())){
+
+        }
+        else{
+            JOptionPane.showMessageDialog(courseGradesPanel, "Error, course already exists in cart.");
+        }
+    }
+
+    private void addToCourseComboBox(JComboBox<String> coursesOfferedInDept, String[] selCourseList) {
+        coursesOfferedInDept.removeAllItems();
+        for(int i = 0; i < selCourseList.length; i++){
+            coursesOfferedInDept.addItem(selCourseList[i]);
+        }
+    }
+
+    private JComboBox<String> departmentComboBox(JComponent planSchedulePanel) {
+        String [] deptList = StudentMode_BLLayer.getListOfDepartments();
+        JComboBox<String> deptListBox = new JComboBox<>(deptList);
+        planSchedulePanel.add(deptListBox);
+        return deptListBox;
     }
 
     private void loadCourseInformation(JComponent coursesPanel) {
@@ -115,7 +218,7 @@ public class StudentMode_UILayer extends JFrame {
             JLabel noContactsFound = new JLabel("No contact info found!");
             contactPanel.add(noContactsFound, "span, wrap");
         }
-        infoPanel.add(contactPanel);
+        infoPanel.add(contactPanel, "wrap");
     }
 
     public static StudentMode_UILayer getInst(){
