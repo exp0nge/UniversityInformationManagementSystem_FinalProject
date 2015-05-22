@@ -25,11 +25,13 @@ public class LoginForm_DALayer {
             }else
                 file = null;
             String line;
+            String [] accountInfoArray;
             Scanner scanner = new Scanner(file);
             while(scanner.hasNextLine()){
                 line = scanner.nextLine();
                 if(line.contains(username)){
-                    if (line.contains(password)) {
+                    accountInfoArray = line.split(",");
+                    if (accountInfoArray[2].equals(username) && accountInfoArray[3].equals(password)) {
                         infoLine = line.split(",");
                         return true;
                     }

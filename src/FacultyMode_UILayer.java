@@ -39,6 +39,7 @@ public class FacultyMode_UILayer extends JFrame {
 
         //Jtabbed
         JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setMinimumSize(new Dimension(520, 480));
         JComponent searchComponent = new JPanel(new MigLayout());
 
         //Search tool
@@ -66,11 +67,12 @@ public class FacultyMode_UILayer extends JFrame {
             FacultyMode_BLLayer.searchForStudent(searchTF.getText(), searchResultsPanel);
             searchButton.setEnabled(true);
         });
+        pane.getRootPane().setDefaultButton(searchButton);
         searchComponent.setMinimumSize(minSizeUI);
         searchComponent.add(searchTF, "span 4");
         searchComponent.add(searchButton, "wrap");
         searchComponent.add(searchResultsPanel, "span");
-        tabbedPane.addTab("Students", searchComponent);
+        tabbedPane.add(new JScrollPane(searchComponent), "Students");
 
         //Payroll Tab
         JComponent facultyPayroll = new JPanel(new MigLayout());
@@ -85,7 +87,7 @@ public class FacultyMode_UILayer extends JFrame {
 
         //Fetch previous inputted hours
         fetchPreviousClockedHours(facultyPayroll);
-        tabbedPane.addTab("Payroll", facultyPayroll);
+        tabbedPane.add(new JScrollPane(facultyPayroll), "Payroll");
 
 
         pane.add(helloNameLabel, "wrap");
@@ -192,7 +194,7 @@ public class FacultyMode_UILayer extends JFrame {
 
     private static void newClassInfo(JPanel jPane, String stUserName) {
         //Show panel to display new class info:
-        JFrame classInfoFrame = new JFrame();
+        JFrame classInfoFrame = new JFrame("New class creation");
         classInfoFrame.setSize(380, 160);
         classInfoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         classInfoFrame.setResizable(false);
@@ -225,6 +227,7 @@ public class FacultyMode_UILayer extends JFrame {
                 e.printStackTrace();
             }
         });
+        infoP.getRootPane().setDefaultButton(addClass);
         infoP.add(classNameL);
         infoP.add(classNameTF, "growx, push, wrap");
         infoP.add(classDeptL);

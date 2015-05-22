@@ -1,55 +1,121 @@
+import net.miginfocom.swing.MigLayout;
+
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by MD on 5/9/2015.
  */
 public class StudentMode_UILayer extends JFrame {
     private static String username;
-    private static String studentInformationString;
+    private static List<String []> listOfCourseInfo;
     private static StudentMode_UILayer inst; //Singleton
     private StudentMode_UILayer(){
-        studentInformationString = StudentFaculty_BLLayer.getStudentName();
-        studentInformationString += "\n" + "ID Number: " + StudentFaculty_BLLayer.getStudentID();
+        StudentMode_BLLayer.setStudentInfo();
         initComponents();
     }
 
-    private static String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus rutrum eros sed convallis tincidunt. \nAliquas. Nullam vitae lectus nec mi tristique mollis ac non lacus. \nPhasellus id sapien et lorem dignissim consectetur sed ut ante. Duis a justo id nisi semper efficitur vel at massa. Maecenas semper finibus magna non finibus. ";
-
-
     private void initComponents() {
-        StudentFaculty_BLLayer.setStudentInfo();
+        StudentMode_BLLayer.setStudentInfo();
         
-        username = StudentFaculty_BLLayer.getUsername();
+        username = StudentMode_BLLayer.getUsername();
         JFrame frame = new JFrame("Student information for: " + username);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 700);
+        frame.setSize(360, 430);
         frame.setResizable(false);
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        JPanel panel = new JPanel(new MigLayout());
         frame.getContentPane().add(panel);
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.WEST;
+
+        //Hello "studentName" label
+        JLabel helloStudent = new JLabel("Hello " +
+                StudentMode_BLLayer.getStudentName() + ",");
+
+        //CCNY banner icon
+        JLabel ccnyBanner = new JLabel();
+        ccnyBanner.setIcon(new ImageIcon("ccnyBanner.png"));
 
         //Create the tabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
         //Student info panel
-        JComponent infoPanel = new JPanel(new GridBagLayout());
-        JTextArea infoText = new JTextArea(studentInformationString);
-        infoText.setEditable(false);
-        infoPanel.add(infoText);
+        JComponent infoPanel = new JPanel(new MigLayout());
+        JLabel idNumber = new JLabel("ID Number: " + Integer.toString(StudentMode_BLLayer.getStudentID()));
+        JLabel scholarship = new JLabel("Scholarship: " + StudentMode_BLLayer.getScholarships());
+
+        infoPanel.add(idNumber, "wrap");
+        infoPanel.add(scholarship, "span, wrap");
+
+        //E-contact info
+        fetchContactInfo(infoPanel);
+
+        //Classes tab
+        JComponent coursesPanel = new JPanel(new MigLayout());
+        TitledBorder coursePanelTitleBorder = BorderFactory.createTitledBorder("Course list");
+        coursesPanel.setBorder(coursePanelTitleBorder);
+        loadCourseInformation(coursesPanel);
+
+        //Grades tab
+        JComponent courseGradesPanel = new JPanel(new MigLayout());
+        loadCourseGrades(courseGradesPanel);
+
+        //Adding tabbedPane + helloStudent label
         tabbedPane.addTab("Student Info", infoPanel);
-        //Student courses
-        JComponent stGrades = new JPanel(new GridBagLayout());
-        stGrades.add(new JTextArea(lorem));
-        tabbedPane.add("Grades", stGrades);
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 5;
-        c.fill = GridBagConstraints.BOTH;
-        panel.add(tabbedPane, c);
+        tabbedPane.add(new JScrollPane(coursesPanel), "Courses");
+        tabbedPane.add(new JScrollPane(courseGradesPanel), "Grades");
+
+
+        panel.add(ccnyBanner, "span, wrap");
+        panel.add(helloStudent, "wrap");
+        panel.add(tabbedPane);
 
         frame.setVisible(true);
+    }
+
+    private void loadCourseInformation(JComponent coursesPanel) {
+        if(listOfCourseInfo == null)
+            listOfCourseInfo = StudentMode_BLLayer.getListOfCourseInfo();
+        for(String [] element : listOfCourseInfo){
+            JLabel courseTitle = new JLabel("Course: " + element[1]);
+            JLabel courseDept = new JLabel("Department: " + element[2]);
+            coursesPanel.add(courseTitle, "span, wrap");
+            coursesPanel.add(courseDept, "span, wrap");
+        }
+    }
+    private void loadCourseGrades(JComponent coursesPanel){
+        if(listOfCourseInfo == null)
+            listOfCourseInfo = StudentMode_BLLayer.getListOfCourseInfo();
+        for(String [] element : listOfCourseInfo){
+            JLabel courseTitle = new JLabel("Course: " + element[1]);
+            JLabel courseGrade = new JLabel("Grade: " + element[3]);
+            coursesPanel.add(courseTitle, "span, wrap");
+            coursesPanel.add(courseGrade, "span, wrap");
+        }
+
+    }
+
+    private void fetchContactInfo(JComponent infoPanel) {
+        JPanel contactPanel = new JPanel(new MigLayout());
+        TitledBorder contactPanelTitle = new TitledBorder("Contact Info");
+        contactPanel.setBorder(contactPanelTitle);
+        String [] eContactInfo = StudentMode_BLLayer.getEContactInfo();
+        if(eContactInfo != null){
+            JLabel phoneNumber = new JLabel("Phone number:" + eContactInfo[1]);
+            JLabel address = new JLabel("Address:" + eContactInfo[2]);
+            JLabel eContactName = new JLabel("Emergency contact name: " + eContactInfo[3]);
+            JLabel eContactNumber = new JLabel("Emergency contact number:" + eContactInfo[4]);
+            contactPanel.add(phoneNumber, "span, wrap");
+            contactPanel.add(address, "span, wrap");
+            contactPanel.add(eContactName, "span, wrap");
+            contactPanel.add(eContactNumber, "span, wrap");
+        }
+        else {
+            JLabel noContactsFound = new JLabel("No contact info found!");
+            contactPanel.add(noContactsFound, "span, wrap");
+        }
+        infoPanel.add(contactPanel);
     }
 
     public static StudentMode_UILayer getInst(){

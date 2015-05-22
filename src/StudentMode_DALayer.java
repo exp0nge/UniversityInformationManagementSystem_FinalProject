@@ -9,8 +9,10 @@ import java.util.Scanner;
  */
 public class StudentMode_DALayer {
     private static String username;
+    private static String filepath;
     private static List<String> accountInfoList;
     private static Student student;
+    private static List<String[]> listOfCourseInfo;
 
     private StudentMode_DALayer(){
 
@@ -18,7 +20,9 @@ public class StudentMode_DALayer {
 
     public static void setUsername(String userName) {
         username = userName;
+        filepath = "accounts/st/" + username + ".csv";
         setEntityInformation();
+        listOfCourseInfo = new ArrayList<>();
     }
     public static void setEntityInformation(){
         accountInfoList = new ArrayList<String>();
@@ -52,5 +56,71 @@ public class StudentMode_DALayer {
 
     public static List<String> getAccountInfoList() {
         return accountInfoList;
+    }
+
+    public static String getScholarships() {
+        String scholarships = searchForLine("scholarships");
+        if(scholarships != null){
+            scholarships = scholarships.replace("scholarships:", "");
+            scholarships = scholarships.replace(",", "");
+            return scholarships;
+        }
+        return "None";
+    }
+
+    private static String searchForLine(String line){
+        try{
+            FileInputStream fileInputStream = new FileInputStream(filepath);
+            Scanner scanner = new Scanner(fileInputStream);
+            String searcher;
+            while(scanner.hasNextLine()){
+                searcher = scanner.nextLine();
+                if(searcher.contains(line)){
+                    fileInputStream.close();
+                    return searcher;
+                }
+            }
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String[] getEContactInfo() {
+        String contactLine = searchForLine("contact");
+        if(contactLine != null) {
+            contactLine = contactLine.replace("contact:", "");
+            String[] contactArray = contactLine.split(",");
+            return contactArray;
+        }
+        else
+            return null;
+    }
+
+    public static List<String []> getListOfCourseInfo() {
+        searchForMultiLine("class");
+        return listOfCourseInfo;
+    }
+
+    private static void searchForMultiLine(String aClass) {
+        listOfCourseInfo = new ArrayList<>();
+        try{
+            FileInputStream fileInputStream = new FileInputStream(filepath);
+            Scanner scanner = new Scanner(fileInputStream);
+            String searcher;
+            while(scanner.hasNextLine()){
+                searcher = scanner.nextLine();
+                if(searcher.contains(aClass)){
+                    searcher = searcher.replace("class:", "");
+                    listOfCourseInfo.add(searcher.split(",")); //add course info as split lines
+                }
+            }
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }

@@ -1,12 +1,16 @@
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by MD on 5/9/2015.
  */
-public class StudentFaculty_BLLayer {
+public class StudentMode_BLLayer {
     private static String username;
+    private static String filepath;
 
-    private StudentFaculty_BLLayer(){
+    private StudentMode_BLLayer(){
     }
 
     public static String getUsername() {
@@ -28,9 +32,22 @@ public class StudentFaculty_BLLayer {
      */
     public static String getStudentName() {
         setStudentInfo();
-        return "Hello, " + StudentMode_DALayer.getName();
+        return StudentMode_DALayer.getName();
     }
     public static int getStudentID(){
         return StudentMode_DALayer.getID();
+    }
+
+    public static String getScholarships() {
+        return StudentMode_DALayer.getScholarships();
+    }
+
+
+    public static String[] getEContactInfo() {
+        return StudentMode_DALayer.getEContactInfo();
+    }
+
+    public static List<String []> getListOfCourseInfo() {
+        return StudentMode_DALayer.getListOfCourseInfo();
     }
 }

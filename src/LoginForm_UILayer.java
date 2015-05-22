@@ -87,6 +87,7 @@ public class LoginForm_UILayer extends JFrame {
                 LoginForm_BLLayer.setPassword(passwordTextF.getText(), frame);
             }
         });
+        panel.getRootPane().setDefaultButton(submitButton);
         panel.add(submitButton, c);
 
         //Register button
