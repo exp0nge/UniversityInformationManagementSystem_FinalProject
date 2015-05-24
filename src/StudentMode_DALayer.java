@@ -58,9 +58,9 @@ public class StudentMode_DALayer {
     }
 
     public static String getScholarships() {
-        String scholarships = searchForLine("scholarships");
+        String scholarships = searchForLine("scholarship");
         if(scholarships != null){
-            scholarships = scholarships.replace("scholarships:", "");
+            scholarships = scholarships.replace("scholarship:,", "");
             scholarships = scholarships.replace(",", "");
             return scholarships;
         }

@@ -22,6 +22,7 @@ public class Register_UILayer {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(200, 200);
         frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridBagLayout());
         frame.getContentPane().add(panel, BorderLayout.CENTER);
@@ -89,16 +90,16 @@ public class Register_UILayer {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(firstNameTF.getText().equals("")){
-                    JOptionPane.showMessageDialog(frame, "First name cannot be blank.");
+                    JOptionPane.showMessageDialog(null, "First name cannot be blank.");
                 }
                 else if(lastNameTF.getText().equals("")){
-                    JOptionPane.showMessageDialog(frame, "Last name cannot be blank.");
+                    JOptionPane.showMessageDialog(null, "Last name cannot be blank.");
                 }
                 else  if(usernameTF.getText().equals("")){
-                    JOptionPane.showMessageDialog(frame, "Username cannot be blank.");
+                    JOptionPane.showMessageDialog(null, "Username cannot be blank.");
                 }
                 else if(passwordTF.getText().equals("")){
-                    JOptionPane.showMessageDialog(frame, "Password cannot be blank.");
+                    JOptionPane.showMessageDialog(null, "Password cannot be blank.");
                 }
                else {
                     LoginForm_BLLayer.registerNewEntity(frame, firstNameTF.getText(), lastNameTF.getText(), usernameTF.getText(), passwordTF.getText());

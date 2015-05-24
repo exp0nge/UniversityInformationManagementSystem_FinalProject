@@ -21,6 +21,7 @@ public class LoginFormChooser_UILayer extends JFrame{
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(300, 250);
         frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridBagLayout());
         frame.getContentPane().add(panel, BorderLayout.CENTER);

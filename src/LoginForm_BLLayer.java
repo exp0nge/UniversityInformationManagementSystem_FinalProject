@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.event.WindowEvent;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by MD on 5/7/2015.
@@ -25,11 +27,36 @@ public class LoginForm_BLLayer {
 
         if(checkPassword) {
             authFormFrame.dispatchEvent(new WindowEvent(authFormFrame, WindowEvent.WINDOW_CLOSING));
+            ExecutorService executorService = Executors.newCachedThreadPool();
             if(userType.equals("faculty")){
-                FacultyMode_UILayer facultyUI = FacultyMode_UILayer.getInst();
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        FacultyMode_UILayer.getInst();
+                    }
+                });
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        LoginForm_UILayer.makeProgressBar();
+                    }
+                });
+                executorService.shutdown();
             }
             else{
-                StudentMode_UILayer studentUI = StudentMode_UILayer.getInst();
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        StudentMode_UILayer.getInst();
+                    }
+                });
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        LoginForm_UILayer.makeProgressBar();
+                    }
+                });
+                executorService.shutdown();
             }
         }
         else

@@ -1,7 +1,10 @@
+import net.miginfocom.swing.MigLayout;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 /**
  * Created by MD on 5/7/2015.
@@ -23,6 +26,7 @@ public class LoginForm_UILayer extends JFrame {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(300, 350);
         frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridBagLayout());
         frame.getContentPane().add(panel, BorderLayout.CENTER);
@@ -83,8 +87,13 @@ public class LoginForm_UILayer extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LoginForm_BLLayer.setUsername(usernameTextF.getText());
-                LoginForm_BLLayer.setPassword(passwordTextF.getText(), frame);
+                if(usernameTextF.getText().equals("") || passwordTextF.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Username/password field cannot be blank.");
+                }
+                else {
+                    LoginForm_BLLayer.setUsername(usernameTextF.getText());
+                    LoginForm_BLLayer.setPassword(passwordTextF.getText(), frame);
+                }
             }
         });
         panel.getRootPane().setDefaultButton(submitButton);
@@ -108,4 +117,38 @@ public class LoginForm_UILayer extends JFrame {
         frame.setVisible(true);
     }
 
+    public static void makeProgressBar() {
+        JFrame progressBarFrame = new JFrame("Progress");
+        progressBarFrame.setSize(200, 60);
+        progressBarFrame.setResizable(false);
+        progressBarFrame.setLocationRelativeTo(null);
+        progressBarFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        Thread t = new Thread(){
+            public void run(){
+                for(int i = 0 ; i < 130 ; i = i + 15){
+                    final int percent = i;
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            progressBar.setValue(percent);
+                        }
+                    });
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if(i >= 100){
+                        progressBarFrame.dispose();
+                    }
+                }
+            }
+        };
+        progressBarFrame.getContentPane().add(progressBar);
+        progressBarFrame.setVisible(true);
+        t.start();
+    }
 }

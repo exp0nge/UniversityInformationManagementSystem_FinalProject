@@ -19,14 +19,14 @@ public class FacultyMode_BLLayer {
 
     public static void searchForStudent(String name, JPanel jPane) {
         if(FacultyMode_DALayer.searchForStudent(name)){
-            JOptionPane.showMessageDialog(jPane, "Student found!");
+            JOptionPane.showMessageDialog(null, "Student found!");
             jPane.removeAll();
             jPane.updateUI();
             List<String []> listOfFoundStudents = FacultyMode_DALayer.getListOfStudentsFound();
             FacultyMode_UILayer.pushFoundStudentsButtons(listOfFoundStudents, jPane);
         }
         else {
-            JOptionPane.showMessageDialog(jPane, "Not found...");
+            JOptionPane.showMessageDialog(null, "Not found. Names are case sensitive.");
         }
     }
 

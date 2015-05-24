@@ -10,18 +10,15 @@ contact:,  2820000000,    160 Convent Avenue Manhattan NY 12001, Parent,    9182
 
 class:,Physics 208, Physics, N/A
 
-scholarships:,New Era
+
 
 class:,ALG, Computer Science, N/A
 class:,Sociology 105, Sociology, N/A
 class:,Software Design, Computer Science, N/A
-:,computer_science,Computer Organization,computer_science,Algorithms,computer_engineering,Engineering Design,computer_engineering, Electrical Circuits,computer_science,Software Engineering
-
-:,computer_science,Algorithms,computer_science,Data Structures
-
-:,computer_science,Data Structures
-
-:,computer_science,Algorithms,computer_engineering,Engineering Design
-
-plannedCourses:,computer_science,Algorithms
 class:,Discrete Math, Computer Science, N/A
+
+plannedCourses:,Computer Engineering,Engineering Design
+
+scholarship:,New Era
+scholarship:,Test Scholar
+scholarship:,Hello scholar

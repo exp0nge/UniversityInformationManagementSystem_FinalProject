@@ -174,8 +174,6 @@ public class FacultyMode_DALayer {
         }
     }
 
-
-
     public static void contactInfo() {
 
         st_contactInfoArray = new String[5];
@@ -261,34 +259,43 @@ public class FacultyMode_DALayer {
 
 
     public static void scholarships() {
-        String scholarshipLine = searchForLineInFile("scholarships");
         if(st_scholarshipList == null)
             st_scholarshipList = new ArrayList<>();
         st_scholarshipList.clear(); //clear list
-        if(scholarshipLine != null){
-            String [] tempArrayForScholarships = scholarshipLine.split(",");
-            for(int i = 1; i < tempArrayForScholarships.length; i++){
-                st_scholarshipList.add(tempArrayForScholarships[i]);
+        try{
+            FileInputStream fileInputStream = new FileInputStream(st_filepath);
+            Scanner scanner = new Scanner(fileInputStream);
+            String line;
+            while(scanner.hasNextLine()){
+                line = scanner.nextLine();
+                if(line.contains("scholarship")){
+                    String [] tempArray = line.split(",");
+                    st_scholarshipList.add(tempArray[1]);
+                }
             }
         }
-
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
     public static List<String> getSt_scholarshipList(){
         return st_scholarshipList;
     }
 
     public static void addScholarship(String scholarshipName) {
-        if(st_scholarshipList.size() == 0){
-            String newScholarshipLine = "\n" + "scholarships:," + scholarshipName;
+        //if(st_scholarshipList.size() == 0){
+            String newScholarshipLine = "\n" + "scholarship:," + scholarshipName;
             writeScholarshipInfoToFile(newScholarshipLine);
-        }
+        //}
+        /**
         else{
-            String oldScholarshipLine = "scholarships:,";
+            String oldScholarshipLine = "scholarships";
             for(int i = 0; i < st_scholarshipList.size(); i++){
                 oldScholarshipLine = oldScholarshipLine + "," + st_scholarshipList.get(i);
             }
-            modifySTinfo(oldScholarshipLine, (oldScholarshipLine + ", " + scholarshipName));
+            modifySTinfo("scholarships", (oldScholarshipLine + ", " + scholarshipName));
         }
+         **/
     }
 
     private static void writeScholarshipInfoToFile(String newScholarshipLine) {

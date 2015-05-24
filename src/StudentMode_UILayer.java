@@ -27,8 +27,9 @@ public class StudentMode_UILayer extends JFrame {
         username = StudentMode_BLLayer.getUsername();
         JFrame frame = new JFrame("Student information for: " + username);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(360, 430);
+        frame.setSize(360, 450);
         frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new MigLayout());
         frame.getContentPane().add(panel);
@@ -136,13 +137,14 @@ public class StudentMode_UILayer extends JFrame {
         savedCourseFrame.setDefaultCloseOperation(savedCourseFrame.DISPOSE_ON_CLOSE);
         savedCourseFrame.setSize(325, 300);
         savedCourseFrame.setResizable(false);
+        savedCourseFrame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new MigLayout());
         savedCourseFrame.getContentPane().add(new JScrollPane(panel));
         //Button to clear saved courses
         JButton clearSavedButton = new JButton("Clear list");
         clearSavedButton.addActionListener(ae->{
-            int response = JOptionPane.showConfirmDialog(savedCourseFrame, "***WARNING***\nAre you sure you want to delete?\n***NO WAY TO UNDO****",
+            int response = JOptionPane.showConfirmDialog(null, "***WARNING***\nAre you sure you want to delete?\n***NO WAY TO UNDO****",
                     "Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
             if(response == JOptionPane.YES_OPTION) {
                 StudentMode_BLLayer.clearSavedCourses();
@@ -178,7 +180,7 @@ public class StudentMode_UILayer extends JFrame {
 
         }
         else{
-            JOptionPane.showMessageDialog(courseGradesPanel, "Error, course already exists in cart.");
+            JOptionPane.showMessageDialog(null, "Error, course already exists in cart.");
         }
     }
 

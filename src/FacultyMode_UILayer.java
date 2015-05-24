@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by MD on 5/15/2015.
  */
-public class FacultyMode_UILayer extends JFrame {
+public class FacultyMode_UILayer extends JFrame{
     private static String username;
     private static FacultyMode_UILayer inst;
     private FacultyMode_UILayer(){
@@ -29,6 +29,7 @@ public class FacultyMode_UILayer extends JFrame {
         frame.setSize(550, 700);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
 
 
         JPanel pane = new JPanel(new MigLayout());
@@ -71,8 +72,14 @@ public class FacultyMode_UILayer extends JFrame {
         JButton searchButton = new JButton("GO");
         searchButton.addActionListener(ae -> {
             searchButton.setEnabled(false); //turn off GO button
-            FacultyMode_BLLayer.searchForStudent(searchTF.getText(), searchResultsPanel);
-            searchButton.setEnabled(true);
+            if(searchTF.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Please enter a name (case sensitive)");
+                searchButton.setEnabled(true);
+            }
+            else {
+                FacultyMode_BLLayer.searchForStudent(searchTF.getText(), searchResultsPanel);
+                searchButton.setEnabled(true);
+            }
         });
         pane.getRootPane().setDefaultButton(searchButton);
         searchComponent.setMinimumSize(minSizeUI);
@@ -142,6 +149,8 @@ public class FacultyMode_UILayer extends JFrame {
         miniFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         miniFrame.setSize(200, 200);
         miniFrame.setResizable(false);
+        miniFrame.setLocationRelativeTo(null);
+
         JPanel panel = new JPanel(new MigLayout());
         miniFrame.getContentPane().add(panel);
 
@@ -157,7 +166,7 @@ public class FacultyMode_UILayer extends JFrame {
         JButton submitButton = new JButton("Submit");
         submitButton.addActionListener(ae->{
             FacultyMode_BLLayer.addNewHoursWorked(startDayTF.getText(), endDayTF.getText(), hoursWorkedTF.getText());
-            JOptionPane.showMessageDialog(miniFrame, "Hours added!");
+            JOptionPane.showMessageDialog(null, "Hours added!");
             fetchPreviousClockedHours(facultyPayroll, addHours);
             miniFrame.dispatchEvent(new WindowEvent(miniFrame, WindowEvent.WINDOW_CLOSING));
         });
@@ -230,6 +239,8 @@ public class FacultyMode_UILayer extends JFrame {
         classInfoFrame.setSize(380, 160);
         classInfoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         classInfoFrame.setResizable(false);
+        classInfoFrame.setLocationRelativeTo(null);
+
         JPanel infoP = new JPanel(new MigLayout());
         classInfoFrame.getContentPane().add(infoP);
         JLabel classDeptL = new JLabel("Department: ");
@@ -280,10 +291,12 @@ public class FacultyMode_UILayer extends JFrame {
     }
     public static void loadContactInfoFrame(){
         //Show panel to display contact info:
-        JFrame contactInfoFrame = new JFrame();
+        JFrame contactInfoFrame = new JFrame("Contact details");
         contactInfoFrame.setSize(380, 250);
         contactInfoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         contactInfoFrame.setResizable(false);
+        contactInfoFrame.setLocationRelativeTo(null);
+
         JPanel contactInfoP = new JPanel(new MigLayout());
         contactInfoFrame.getContentPane().add(contactInfoP);
 
@@ -294,36 +307,42 @@ public class FacultyMode_UILayer extends JFrame {
 
         //event listeners
         editCell.addActionListener(ae->{
-            String cellNumber = JOptionPane.showInputDialog(contactInfoP, "Enter a valid phone number (only digits)");
-            FacultyMode_BLLayer.contactInfo_setCellNumber(cellNumber);
-            //reload the frame
-            contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
-            loadContactInfoFrame();
+            String cellNumber = JOptionPane.showInputDialog(null, "Enter a valid phone number (only digits)");
+            if(!cellNumber.equals("")) {
+                FacultyMode_BLLayer.contactInfo_setCellNumber(cellNumber);
+                //reload the frame
+                contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
+                loadContactInfoFrame();
+            }
 
         });
         editAddress.addActionListener(ae->{
-            String address = JOptionPane.showInputDialog(contactInfoP, "Enter a valid address (no commas)");
-            FacultyMode_BLLayer.contactInfo_setAddress(address);
-            //reload frame
-            contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
-            loadContactInfoFrame();
+            String address = JOptionPane.showInputDialog(null, "Enter a valid address (no commas)");
+            if(!address.equals("")) {
+                FacultyMode_BLLayer.contactInfo_setAddress(address);
+                //reload frame
+                contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
+                loadContactInfoFrame();
+            }
         });
         editeName.addActionListener(ae->{
-            String emergencyName = JOptionPane.showInputDialog(contactInfoP, "Enter a valid name of emergency contact");
-            FacultyMode_BLLayer.contactInfo_setEmergencyName(emergencyName);
-            //reload frame
-            contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
-            loadContactInfoFrame();
+            String emergencyName = JOptionPane.showInputDialog(null, "Enter a valid name of emergency contact");
+            if(!emergencyName.equals("")) {
+                FacultyMode_BLLayer.contactInfo_setEmergencyName(emergencyName);
+                //reload frame
+                contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
+                loadContactInfoFrame();
+            }
         });
         editeNumber.addActionListener(ae->{
-            String emergencyNumber = JOptionPane.showInputDialog(contactInfoP, "Enter a valid phone number (only digits)");
-            FacultyMode_BLLayer.contactInfo_setEmergencyNumber(emergencyNumber);
-            //reload frame
-            contactInfoFrame.dispatchEvent(new WindowEvent(contactInfoFrame, WindowEvent.WINDOW_CLOSING));
-            loadContactInfoFrame();
+            String emergencyNumber = JOptionPane.showInputDialog(null, "Enter a valid phone number (only digits)");
+            if(emergencyNumber.equals("")) {
+                FacultyMode_BLLayer.contactInfo_setEmergencyNumber(emergencyNumber);
+                //reload frame
+                contactInfoFrame.dispose();
+                loadContactInfoFrame();
+            }
         });
-
-
 
         //push them to panel
         String [] contactInfoArray = FacultyMode_BLLayer.getOldContactInfo();
@@ -347,8 +366,9 @@ public class FacultyMode_UILayer extends JFrame {
 
     public static void loadScholarships(List<String> listOfScholarships) {
         JFrame frame = new JFrame("Scholarships");
-        frame.setSize(200, 400);
+        frame.setSize(250, 300);
         frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new MigLayout());
         frame.getContentPane().add(panel);
@@ -360,13 +380,20 @@ public class FacultyMode_UILayer extends JFrame {
 
         JButton addScholarship = new JButton("Add scholarship");
         addScholarship.addActionListener(ae -> {
-            String scholarshipName = JOptionPane.showInputDialog(panel, "Enter name of scholarship:");
-            FacultyMode_BLLayer.addScholarship(scholarshipName);
-            JOptionPane.showMessageDialog(panel, "New scholarship added");
-            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            String scholarshipName = JOptionPane.showInputDialog(null, "Enter name of scholarship:");
+            if(scholarshipName.equals("")){
+                JOptionPane.showMessageDialog(null, "Error, no scholarship name entered!");
+            }
+            else {
+                FacultyMode_BLLayer.addScholarship(scholarshipName);
+                JOptionPane.showMessageDialog(null, "New scholarship added");
+                frame.dispose();
+            }
         });
 
         panel.add(addScholarship);
         frame.setVisible(true);
     }
+
+
 }
