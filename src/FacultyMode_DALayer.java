@@ -68,7 +68,8 @@ public class FacultyMode_DALayer {
                 listOfStudentsArray = nextLine.split(",");
                 if(listOfStudentsArray.length > 3) {
                     //Search only the first name, last name, or ID
-                    if (listOfStudentsArray[0].equals(studentName) || listOfStudentsArray[1].equals(studentName) || listOfStudentsArray[5].equals(studentName)) {
+                    if (listOfStudentsArray[0].equals(studentName) || listOfStudentsArray[1].equals(studentName) || listOfStudentsArray[5].equals(studentName) ||
+                            (listOfStudentsArray[0] + " " + listOfStudentsArray[1]).equals(studentName)) {
                         listOfStudentsFound.add(listOfStudentsArray);
                         state = true;
                     }
@@ -283,19 +284,8 @@ public class FacultyMode_DALayer {
     }
 
     public static void addScholarship(String scholarshipName) {
-        //if(st_scholarshipList.size() == 0){
-            String newScholarshipLine = "\n" + "scholarship:," + scholarshipName;
-            writeScholarshipInfoToFile(newScholarshipLine);
-        //}
-        /**
-        else{
-            String oldScholarshipLine = "scholarships";
-            for(int i = 0; i < st_scholarshipList.size(); i++){
-                oldScholarshipLine = oldScholarshipLine + "," + st_scholarshipList.get(i);
-            }
-            modifySTinfo("scholarships", (oldScholarshipLine + ", " + scholarshipName));
-        }
-         **/
+        String newScholarshipLine = "\n" + "scholarship:," + scholarshipName;
+        writeScholarshipInfoToFile(newScholarshipLine);
     }
 
     private static void writeScholarshipInfoToFile(String newScholarshipLine) {
