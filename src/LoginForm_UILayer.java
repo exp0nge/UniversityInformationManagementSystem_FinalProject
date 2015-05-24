@@ -69,7 +69,8 @@ public class LoginForm_UILayer extends JFrame {
         panel.add(passwordLabel, c);
 
         //Password entry
-        JTextField passwordTextF = new JTextField();
+        JPasswordField passwordTextF = new JPasswordField();
+        passwordTextF.setEchoChar('*');
         c.gridx = 1;
         c.gridy = 5;
 
@@ -87,12 +88,16 @@ public class LoginForm_UILayer extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(usernameTextF.getText().equals("") || passwordTextF.getText().equals("")){
+                if(usernameTextF.getText().equals("") || passwordTextF.getPassword().length < 1){
                     JOptionPane.showMessageDialog(null, "Username/password field cannot be blank.");
                 }
                 else {
+                    String password = "";
+                    for(int i = 0; i < passwordTextF.getPassword().length; i++){
+                        password += passwordTextF.getPassword()[i];
+                    }
                     LoginForm_BLLayer.setUsername(usernameTextF.getText());
-                    LoginForm_BLLayer.setPassword(passwordTextF.getText(), frame);
+                    LoginForm_BLLayer.setPassword(password, frame);
                 }
             }
         });

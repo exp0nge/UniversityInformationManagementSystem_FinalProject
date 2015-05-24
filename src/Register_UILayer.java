@@ -74,7 +74,8 @@ public class Register_UILayer {
         c.gridx = 0;
         c.gridy = 3;
         panel.add(passwordL, c);
-        JTextField passwordTF = new JTextField();
+        JPasswordField passwordTF = new JPasswordField();
+        passwordTF.setEchoChar('*');
         c.gridx = 1;
         c.gridy = 3;
         c.weightx = 1;
@@ -98,11 +99,15 @@ public class Register_UILayer {
                 else  if(usernameTF.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Username cannot be blank.");
                 }
-                else if(passwordTF.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "Password cannot be blank.");
+                else if(passwordTF.getPassword().length < 3){
+                    JOptionPane.showMessageDialog(null, "Password cannot be blank/less than 3 characters.");
                 }
                else {
-                    LoginForm_BLLayer.registerNewEntity(frame, firstNameTF.getText(), lastNameTF.getText(), usernameTF.getText(), passwordTF.getText());
+                    String password = "";
+                    for(char i : passwordTF.getPassword()){
+                        password += i;
+                    }
+                    LoginForm_BLLayer.registerNewEntity(frame, firstNameTF.getText(), lastNameTF.getText(), usernameTF.getText(), password);
                 }
             }
         });
