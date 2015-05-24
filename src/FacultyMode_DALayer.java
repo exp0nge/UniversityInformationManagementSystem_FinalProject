@@ -35,7 +35,7 @@ public class FacultyMode_DALayer {
     }
 
     public static void setEntityInformation(){
-        accountInfoList = new ArrayList<String>();
+        accountInfoList = new ArrayList<>();
 
         try{
             FileInputStream file = new FileInputStream("accounts/faculty/" + username + ".csv");
@@ -69,7 +69,10 @@ public class FacultyMode_DALayer {
                 if(listOfStudentsArray.length > 3) {
                     //Search only the first name, last name, or ID
                     if (listOfStudentsArray[0].equals(studentName) || listOfStudentsArray[1].equals(studentName) || listOfStudentsArray[5].equals(studentName) ||
-                            (listOfStudentsArray[0] + " " + listOfStudentsArray[1]).equals(studentName)) {
+                            (listOfStudentsArray[0] + " " + listOfStudentsArray[1]).equals(studentName) ||
+                            listOfStudentsArray[0].toLowerCase().equals(studentName) ||
+                            listOfStudentsArray[1].toLowerCase().equals(studentName) ||
+                            (listOfStudentsArray[0].toLowerCase() + " " + listOfStudentsArray[1]).toLowerCase().equals(studentName)) {
                         listOfStudentsFound.add(listOfStudentsArray);
                         state = true;
                     }
@@ -110,20 +113,31 @@ public class FacultyMode_DALayer {
                     String classInfoString = "Class: " + classInfo[1] + ", Department: " + classInfo[2] + ", Grade: " + classInfo[3];
                     JLabel classInfoJL = new JLabel(classInfoString);
                     JButton editGrade = new JButton("Modify Grade");
+                    JButton deleteCourse = new JButton("Remove");
                     final String xfilePath = st_filepath;
+                    final String courseToDeleteLine = line;
                     editGrade.addActionListener(ae -> {
                         String replacementGrade = JOptionPane.showInputDialog(jPane, "Input new grade: ");
                         modifyStGrade(xfilePath, classInfo, replacementGrade);
                         openStudentPanel(stUserName, jPane); //reset Jpanel
                     });
+                    deleteCourse.addActionListener(ae->{
+                        removeCourse(courseToDeleteLine);
+                        openStudentPanel(stUserName, jPane); //reset panel
+                    });
                     jPane.add(classInfoJL, "wrap");
-                    jPane.add(editGrade, "wrap");
+                    jPane.add(editGrade);
+                    jPane.add(deleteCourse, "wrap");
                 }
             }
         }
         catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    private static void removeCourse(String classInfoString) {
+        modifySTinfo(classInfoString, "\n");
     }
 
     private static void modifyStGrade(String stFile, String[] classInfo, String replacementGrade) {
