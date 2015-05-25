@@ -12,6 +12,7 @@ public class StudentMode_DALayer {
     private static List<String> accountInfoList;
     private static Student student;
     private static List<String[]> listOfCourseInfo;
+    private static List<String[]> listOfMessages;
 
     private StudentMode_DALayer(){
 
@@ -99,11 +100,11 @@ public class StudentMode_DALayer {
     }
 
     public static List<String []> getListOfCourseInfo() {
-        searchForMultiLine("class");
+        getListOfCourseInfo("class");
         return listOfCourseInfo;
     }
 
-    private static void searchForMultiLine(String aClass) {
+    private static void getListOfCourseInfo(String aClass) {
         listOfCourseInfo = new ArrayList<>();
         try{
             FileInputStream fileInputStream = new FileInputStream(filepath);
@@ -179,7 +180,7 @@ public class StudentMode_DALayer {
         return true;
     }
 
-    private static void modifyExistingLine(String oldline, String newString) {
+    private static void modifyExistingLine(String oldLine, String newString) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(new File(filepath)));
             String s;
@@ -188,7 +189,7 @@ public class StudentMode_DALayer {
             while ((s = reader.readLine()) != null) {
                 totalString += s + "\n";
             }
-            totalString = totalString.replace(oldline, newString);
+            totalString = totalString.replace(oldLine, newString);
             FileWriter fw = new FileWriter(new File(filepath));
             fw.write(totalString);
             fw.close();
@@ -218,5 +219,38 @@ public class StudentMode_DALayer {
 
     public static void clearSavedCourseHistory() {
         modifyExistingLine("plannedCourses", "");
+    }
+
+    public static boolean checkForMessages() {
+        boolean state = false;
+        listOfMessages = new ArrayList<>();
+        try{
+            FileInputStream fileInputStream = new FileInputStream(filepath);
+            Scanner scanner = new Scanner(fileInputStream);
+            String line;
+            while(scanner.hasNextLine()){
+                line = scanner.nextLine();
+                if(line.contains("message")){
+                    String [] temp = line.split(",");
+                    if(temp[3].contains("COMMA_HOLDER")){
+                        temp[3] = temp[3].replace("COMMA_HOLDER", ",");
+                    }
+                    listOfMessages.add(temp);
+                    state = true;
+                }
+            }
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return state;
+    }
+
+    public static List<String[]> getMListOfMessages() {
+        return listOfMessages;
+    }
+
+    public static void deleteMessage(String fullLineMessage) {
+        modifyExistingLine(fullLineMessage, "");
     }
 }

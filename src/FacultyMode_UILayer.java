@@ -2,6 +2,7 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -53,6 +54,7 @@ public class FacultyMode_UILayer extends JFrame{
         //Search tool
         JTextField searchTF = new JTextField("Search for student...");
         searchTF.setMinimumSize(searchTF.getPreferredSize());
+        searchTF.setMaximumSize(searchTF.getPreferredSize());
         searchTF.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -62,6 +64,7 @@ public class FacultyMode_UILayer extends JFrame{
             @Override
             public void focusLost(FocusEvent e) {
 
+
             }
         });
         MigLayout searchPanelManager = new MigLayout(
@@ -69,7 +72,7 @@ public class FacultyMode_UILayer extends JFrame{
         );
         JPanel searchResultsPanel = new JPanel(searchPanelManager);
         //Go button
-        JButton searchButton = new JButton("GO");
+        JButton searchButton = new JButton("Go");
         searchButton.addActionListener(ae -> {
             searchButton.setEnabled(false); //turn off GO button
             if(searchTF.getText().equals("")){
@@ -81,9 +84,9 @@ public class FacultyMode_UILayer extends JFrame{
                 searchButton.setEnabled(true);
             }
         });
-        pane.getRootPane().setDefaultButton(searchButton);
+
         searchComponent.setMinimumSize(minSizeUI);
-        searchComponent.add(searchTF, "span 4");
+        searchComponent.add(searchTF, "span 6, grow");
         searchComponent.add(searchButton, "wrap");
         searchComponent.add(searchResultsPanel, "span");
         tabbedPane.add(new JScrollPane(searchComponent), "Students");
@@ -106,8 +109,45 @@ public class FacultyMode_UILayer extends JFrame{
         //Calender RSS feed
         JComponent calenderEventsPanel = new JPanel(new MigLayout());
         fetchCalenderEvents(calenderEventsPanel);
-        tabbedPane.add(new JScrollPane(calenderEventsPanel), "Upcoming events");
+        tabbedPane.add(new JScrollPane(calenderEventsPanel), "Events (RSS)");
 
+        //Message Center
+        JComponent messagePanel = new JPanel(new MigLayout());
+        JPanel messageBodyPanel = new JPanel(new MigLayout());
+
+        JTextField messageSearchTF = new JTextField("Search for student...");
+        messageSearchTF.setMinimumSize(messageSearchTF.getPreferredSize());
+        messageSearchTF.setMaximumSize(messageSearchTF.getPreferredSize());
+        messageSearchTF.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                messageSearchTF.setText("");
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+
+            }
+        });
+        JButton messageSearchButton = new JButton("Go");
+        messageSearchButton.addActionListener(ae->{
+            if(messageSearchTF.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Name is required to search!");
+            }
+            else {
+                if(FacultyMode_BLLayer.searchForStudentToMessage(messageSearchTF.getText(), messageBodyPanel)){
+
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Student not found. Names must be spelled correctly.");
+                }
+            }
+        });
+        messagePanel.add(messageSearchTF, "span 6, grow");
+        messagePanel.add(messageSearchButton, "wrap");
+        messagePanel.add(messageBodyPanel, "span");
+
+        tabbedPane.add(new JScrollPane(messagePanel), "Message Center");
 
         pane.add(helloNameLabel, "wrap");
         pane.add(tabbedPane, "span");
@@ -393,6 +433,55 @@ public class FacultyMode_UILayer extends JFrame{
 
         panel.add(addScholarship);
         frame.setVisible(true);
+    }
+
+
+    public static void pushFoundStudentsForMessageButtons(List<String[]> listOfStudentsfound, JComponent messagePanel) {
+        for(String [] element : listOfStudentsfound){
+            JButton stButton = new JButton(element[0] + " " + element[1]);
+            stButton.addActionListener(ae -> {
+                openStudentMessageCenter(element[2], messagePanel);
+            });
+            messagePanel.add(stButton, "wrap");
+            messagePanel.updateUI();
+        }
+    }
+
+    private static void openStudentMessageCenter(String stName, JComponent messagePanel) {
+        messagePanel.removeAll();
+        messagePanel.updateUI();
+        TitledBorder titledBorderMessageBody = new TitledBorder("Send a message");
+
+        JLabel titleLabel = new JLabel("Title");
+        JLabel messageLabel = new JLabel("Message");
+
+        JTextField titleTF = new JTextField();
+        titleTF.setMinimumSize(new Dimension(150, 20));
+        JTextArea messageBodyTA = new JTextArea();
+        messageBodyTA.setMinimumSize(new Dimension(420, 250));
+        messageBodyTA.setMaximumSize(new Dimension(420, 250));
+        messageBodyTA.setLineWrap(true);
+        messageBodyTA.setWrapStyleWord(true);
+
+        JButton sendButton = new JButton("Send");
+        sendButton.addActionListener(ae->{
+            if(titleTF.getText().equals("") || messageBodyTA.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Enter a title and a message.");
+            }
+            messagePanel.setBorder(titledBorderMessageBody);
+            if(FacultyMode_BLLayer.sendMessageToStudent(stName, titleTF.getText(), messageBodyTA.getText())){
+                JOptionPane.showMessageDialog(null, "Message sent!");
+                messagePanel.removeAll();
+                messagePanel.updateUI();
+                messagePanel.setBorder(null);
+            }
+        });
+
+        messagePanel.add(titleLabel);
+        messagePanel.add(titleTF, "span 25, wrap");
+        messagePanel.add(messageLabel, "wrap");
+        messagePanel.add(messageBodyTA, "grow, span 15 15, wrap");
+        messagePanel.add(sendButton, "wrap");
     }
 
 

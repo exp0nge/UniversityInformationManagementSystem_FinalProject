@@ -107,4 +107,23 @@ public class FacultyMode_BLLayer {
     public static Map<String, String> getListOfCalenderEvents() {
         return FacultyMode_DALayer.getListOfCalenderEvents();
     }
+
+    public static boolean searchForStudentToMessage(String stName, JComponent messagePanel) {
+        if(FacultyMode_DALayer.searchForStudent(stName)){
+            messagePanel.removeAll();
+            messagePanel.updateUI();
+            List<String[]> listOfStudentsfound = FacultyMode_DALayer.getListOfStudentsFound();
+            FacultyMode_UILayer.pushFoundStudentsForMessageButtons(listOfStudentsfound, messagePanel);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean sendMessageToStudent(String stName, String titleTFText, String messageBodyTAText) {
+        if(FacultyMode_DALayer.sendMessageToStudent(stName, titleTFText, messageBodyTAText)){
+            return true;
+        }
+        return false;
+    }
+
 }

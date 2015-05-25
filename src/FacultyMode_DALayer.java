@@ -106,7 +106,6 @@ public class FacultyMode_DALayer {
                     FacultyMode_BLLayer.makeStudentNameJL(stNameLabel, jPane);
                     //Add options for new class/contact/awards
                     FacultyMode_BLLayer.openStudentClassOptionButtons(jPane, stUserName);
-                    //openStudentClassOptionButtons(st_filepath, jPane, stUserName);
                 }
                 if(line.contains("class:")){
                     String [] classInfo = line.split(",");
@@ -367,5 +366,25 @@ public class FacultyMode_DALayer {
         }
 
         return listOfCalenderEvents;
+    }
+
+    public static boolean sendMessageToStudent(String stUserName, String title, String messageBody) {
+        try{
+            st_filepath = "accounts/st/" + stUserName + ".csv";
+            if(messageBody.contains("\n"))
+                messageBody = messageBody.replace("\n", " ");
+            FileOutputStream fileOutputStream = new FileOutputStream(st_filepath, true);
+            if(messageBody.contains(",")){
+                messageBody = messageBody.replace(",", "COMMA_HOLDER");
+            }
+            String messageString = "\n" + "message:," + facultyInst.getName() + "," + title + "," + messageBody;
+            fileOutputStream.write(messageString.getBytes());
+            fileOutputStream.close();
+            return true;
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 }

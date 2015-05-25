@@ -3,6 +3,7 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Map;
@@ -113,8 +114,11 @@ public class StudentMode_UILayer extends JFrame {
         panel.add(ccnyBanner, "span, wrap");
         panel.add(helloStudent, "wrap");
         panel.add(tabbedPane);
-
         frame.setVisible(true);
+
+        //check for messages
+        StudentMode_BLLayer.checkForMessages();
+
     }
 
     private void fetchRSSEvents(JComponent eventsRSS) {
@@ -252,5 +256,57 @@ public class StudentMode_UILayer extends JFrame {
         return inst;
     }
 
+    public static void showMessages(List<String[]> messageList) {
+        JFrame messageFrame = new JFrame("Messages");
+        messageFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        messageFrame.setSize(350, 250);
+        messageFrame.setResizable(false);
+        messageFrame.setLocationRelativeTo(null);
 
+        JPanel messagePanel = new JPanel(new MigLayout());
+        //JScrollPane scrollPane = new JScrollPane();
+        //scrollPane.setViewportView(messagePanel);
+        messageFrame.getContentPane().add(new JScrollPane(messagePanel));
+
+        loadMessagesToPanel(messageList, messagePanel, messageFrame);
+
+        messageFrame.setVisible(true);
+    }
+
+    private static void loadMessagesToPanel(List<String[]> messageList, JPanel messagePanel, JFrame frame) {
+        messagePanel.removeAll();
+        messagePanel.updateUI();
+        for(String[] messageItem : messageList){
+            JLabel senderLabel = new JLabel("Sender: " + messageItem[1]);
+            JLabel titleLabel = new JLabel("Title: " + messageItem[2]);
+
+            JTextArea messageBodyTA = new JTextArea(2, 25);
+            messageBodyTA.setText(messageItem[3]);
+            messageBodyTA.setWrapStyleWord(true);
+            messageBodyTA.setLineWrap(true);
+            messageBodyTA.setEditable(false);
+            messageBodyTA.setFocusable(false);
+            messageBodyTA.setOpaque(false);
+            messageBodyTA.setBackground(UIManager.getColor("Label.background"));
+            messageBodyTA.setBorder(UIManager.getBorder("Label.border"));
+
+            JButton deleteMessageButton = new JButton("Delete Message");
+            deleteMessageButton.addActionListener(ae->{
+                int response = JOptionPane.showConfirmDialog(messagePanel, "Mark for deletion?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
+                if(response == JOptionPane.YES_OPTION) {
+                    String fullLineMessage = messageItem[0] + "," + messageItem[1] + "," + messageItem[2] + "," + messageItem[3];
+                    StudentMode_BLLayer.deleteMessage(fullLineMessage);
+                    //reload panel
+                    frame.dispose();
+                    StudentMode_BLLayer.checkForMessages();
+                }
+            });
+
+            messagePanel.add(senderLabel, "wrap");
+            messagePanel.add(titleLabel, "wrap");
+            messagePanel.add(messageBodyTA, "span, growx, wrap");
+            messagePanel.add(deleteMessageButton);
+            messagePanel.add(new JSeparator(), "growx, span, wrap");
+        }
+    }
 }

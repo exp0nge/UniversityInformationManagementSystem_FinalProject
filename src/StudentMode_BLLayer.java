@@ -67,4 +67,15 @@ public class StudentMode_BLLayer {
     public static void clearSavedCourses() {
         StudentMode_DALayer.clearSavedCourseHistory();
     }
+
+    public static void checkForMessages() {
+        if(StudentMode_DALayer.checkForMessages()){
+            List<String []> messageList = StudentMode_DALayer.getMListOfMessages();
+            StudentMode_UILayer.showMessages(messageList);
+        }
+    }
+
+    public static void deleteMessage(String fullLineMessage) {
+        StudentMode_DALayer.deleteMessage(fullLineMessage);
+    }
 }
