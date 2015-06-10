@@ -1,0 +1,25 @@
+File information for: unid
+Md,Islam,unid,pass,student,4
+
+contact:,  2820000000,    160 Convent Avenue Manhattan NY 12001, Parent,    9182929999
+
+
+class:,Physics 208, Physics, N/A
+
+
+class:,ALG, Computer Science, N/A
+
+
+class:,Software Design, Computer Science, N/A
+class:,Discrete Math, Computer Science, N/A
+
+plannedCourses:,Computer Engineering,Engineering Design
+
+scholarship:,New Era
+scholarship:,Test Scholar
+scholarship:,Hello scholar
+
+, using word-wrap would be also necessary so that all other words that aren't longer that the label length (which likely would be most of them) are still wrapped appropriately. Without it, they would break unceremoniously and the end of the label length, which is likely undesired (but not mentioned in the OP). Set word-wrap to false in my example to see what I mean. –
+
+message:,John Doe,Test Message,short message
+message:,John Doe,long msg,Lorem ipsum dolor sit ametCOMMA_HOLDER consectetur adipiscing elit. Phasellus sit amet nulla rhoncusCOMMA_HOLDER dictum justo sit ametCOMMA_HOLDER faucibus lectus. Proin tinciduntCOMMA_HOLDER dolor sit amet ultricies vestibulumCOMMA_HOLDER erat tellus tristique lectusCOMMA_HOLDER sit amet aliquet odio massa quis magna. In a facilisis loremCOMMA_HOLDER et feugiat mi. Morbi ut rutrum felisCOMMA_HOLDER eget ullamcorper justo. Aenean metus loremCOMMA_HOLDER ultrices quis pellentesque euCOMMA_HOLDER iaculis eget ante. Nunc elementum nibh odioCOMMA_HOLDER nec volutpat mi tempus in. Nunc fermentum pretium nibhCOMMA_HOLDER ac pharetra odio volutpat eu.
